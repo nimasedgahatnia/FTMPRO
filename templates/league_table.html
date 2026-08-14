@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}جدول لیگ{% endblock %}
+
+{% block content %}
+<div class="league-table-page">
+    <h1>جدول لیگ</h1>
+    
+    <table class="league-table">
+        <thead>
+            <tr>
+                <th>رتبه</th>
+                <th>تیم</th>
+                <th>بازی</th>
+                <th>برد</th>
+                <th>مساوی</th>
+                <th>باخت</th>
+                <th>گل زده</th>
+                <th>گل خورده</th>
+                <th>تفاضل</th>
+                <th>امتیاز</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for team in teams %}
+            <tr class="{% if team.user_id %}user-team{% endif %}">
+                <td>{{ loop.index }}</td>
+                <td>{{ team.name }}</td>
+                <td>{{ team.matches_played }}</td>
+                <td>{{ team.wins }}</td>
+                <td>{{ team.draws }}</td>
+                <td>{{ team.losses }}</td>
+                <td>{{ team.goals_for }}</td>
+                <td>{{ team.goals_against }}</td>
+                <td>{{ team.goals_for - team.goals_against }}</td>
+                <td><strong>{{ team.points }}</strong></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

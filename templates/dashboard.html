@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}داشبورد{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <h1>داشبورد تیم {{ team.name }}</h1>
+    
+    <div class="team-info">
+        <div class="info-card">
+            <h3>💰 بودجه</h3>
+            <p>{{ "%.0f"|format(team.budget) }} دلار</p>
+        </div>
+        <div class="info-card">
+            <h3>📊 امتیاز</h3>
+            <p>{{ team.points }} امتیاز</p>
+        </div>
+        <div class="info-card">
+            <h3>⚽ آمار فصل</h3>
+            <p>{{ team.matches_played }} بازی | {{ team.wins }} برد | {{ team.draws }} مساوی | {{ team.losses }} باخت</p>
+            <p>گل زده: {{ team.goals_for }} | گل خورده: {{ team.goals_against }}</p>
+        </div>
+    </div>
+    
+    {% if next_match %}
+    <div class="next-match">
+        <h2>بازی بعدی</h2>
+        <div class="match-preview">
+            <span>{{ next_match.home_team.name if next_match.home_team_id != team.id else next_match.away_team.name }}</span>
+            <span>vs</span>
+            <span>{{ team.name }}</span>
+        </div>
+    </div>
+    {% endif %}
+    
+    <div class="top-players">
+        <h2>بهترین بازیکنان</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>نام</th>
+                    <th>پست</th>
+                    <th>امتیاز</th>
+                    <th>سن</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for player in players %}
+                <tr>
+                    <td>{{ player.full_name }}</td>
+                    <td>{{ player.position }}</td>
+                    <td>{{ player.overall_rating }}</td>
+                    <td>{{ player.age }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{{ url_for('players') }}" class="btn btn-secondary">مشاهده همه بازیکنان</a>
+    </div>
+    
+    <div class="league-table-preview">
+        <h2>جدول لیگ (۵ تیم برتر)</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>رتبه</th>
+                    <th>تیم</th>
+                    <th>بازی</th>
+                    <th>امتیاز</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in league_table[:5] %}
+                <tr class="{% if t.id == team.id %}current-team{% endif %}">
+                    <td>{{ loop.index }}</td>
+                    <td>{{ t.name }}</td>
+                    <td>{{ t.matches_played }}</td>
+                    <td>{{ t.points }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{{ url_for('league_table') }}" class="btn btn-secondary">مشاهده کامل جدول</a>
+    </div>
+    
+    <div class="actions">
+        <a href="{{ url_for('simulate_week') }}" class="btn btn-primary">شبیه‌سازی هفته</a>
+        <a href="{{ url_for('transfers') }}" class="btn btn-secondary">بازار انتقال</a>
+    </div>
+</div>
+{% endblock %}

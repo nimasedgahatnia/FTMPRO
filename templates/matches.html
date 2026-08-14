@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}مسابقات{% endblock %}
+
+{% block content %}
+<div class="matches-page">
+    <h1>مسابقات تیم {{ team.name }}</h1>
+    
+    <a href="{{ url_for('simulate_week') }}" class="btn btn-primary">شبیه‌سازی هفته جاری</a>
+    
+    {% if matches %}
+    <table class="matches-table">
+        <thead>
+            <tr>
+                <th>هفته</th>
+                <th>تیم خانگی</th>
+                <th>نتیجه</th>
+                <th>تیم میهمان</th>
+                <th>تاریخ</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for match in matches %}
+            <tr class="{% if match.home_team_id == team.id or match.away_team_id == team.id %}current-team-match{% endif %}">
+                <td>{{ match.week }}</td>
+                <td>{{ match.home_team.name }}</td>
+                <td>
+                    {% if match.played %}
+                        {{ match.home_score }} - {{ match.away_score }}
+                    {% else %}
+                        -:-
+                    {% endif %}
+                </td>
+                <td>{{ match.away_team.name }}</td>
+                <td>{{ match.match_date.strftime('%Y-%m-%d') }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>هیچ مسابقه‌ای ثبت نشده است.</p>
+    {% endif %}
+</div>
+{% endblock %}

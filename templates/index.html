@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="hero">
+    <h1>به بازی مدیریت فوتبال خوش آمدید</h1>
+    <p>تیم خود را بسازید، بازیکنان را خرید و فروش کنید و به قهرمانی برسید!</p>
+    <div class="cta-buttons">
+        <a href="{{ url_for('register') }}" class="btn btn-primary">شروع کنید</a>
+        <a href="{{ url_for('login') }}" class="btn btn-secondary">ورود</a>
+    </div>
+</div>
+
+<div class="features">
+    <div class="feature-card">
+        <h3>⚽ مدیریت تیم</h3>
+        <p>تیم خود را با بازیکنان مستعد بسازید و استراتژی خود را پیاده کنید</p>
+    </div>
+    <div class="feature-card">
+        <h3>💰 بازار انتقال</h3>
+        <p>بازیکنان جدید بخرید و بازیکنان خود را بفروشید</p>
+    </div>
+    <div class="feature-card">
+        <h3>🏆 لیگ و مسابقات</h3>
+        <p>در لیگ شرکت کنید و با دیگر تیم‌ها رقابت کنید</p>
+    </div>
+</div>
+{% endblock %}
