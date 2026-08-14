@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}بازیکنان{% endblock %}
+
+{% block content %}
+<div class="players-page">
+    <h1>بازیکنان تیم {{ team.name }}</h1>
+    
+    <div class="filters">
+        <a href="{{ url_for('players') }}" class="btn {% if not request.args.get('position') %}btn-primary{% else %}btn-secondary{% endif %}">همه</a>
+        <a href="{{ url_for('players', position='GK') }}" class="btn {% if request.args.get('position') == 'GK' %}btn-primary{% else %}btn-secondary{% endif %}">دروازه‌بان</a>
+        <a href="{{ url_for('players', position='DEF') }}" class="btn {% if request.args.get('position') == 'DEF' %}btn-primary{% else %}btn-secondary{% endif %}">مدافع</a>
+        <a href="{{ url_for('players', position='MID') }}" class="btn {% if request.args.get('position') == 'MID' %}btn-primary{% else %}btn-secondary{% endif %}">هافبک</a>
+        <a href="{{ url_for('players', position='FWD') }}" class="btn {% if request.args.get('position') == 'FWD' %}btn-primary{% else %}btn-secondary{% endif %}">مهاجم</a>
+    </div>
+    
+    <table class="players-table">
+        <thead>
+            <tr>
+                <th>نام</th>
+                <th>پست</th>
+                <th>سن</th>
+                <th>امتیاز کلی</th>
+                <th>پتانسیل</th>
+                <th>فرم</th>
+                <th>استقامت</th>
+                <th>ارزش بازار</th>
+                <th>عملکرد</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for player in players %}
+            <tr>
+                <td>{{ player.full_name }}</td>
+                <td>{{ player.position }}</td>
+                <td>{{ player.age }}</td>
+                <td>{{ player.overall_rating }}</td>
+                <td>{{ player.potential }}</td>
+                <td>{{ player.form }}</td>
+                <td>{{ player.stamina }}</td>
+                <td>{{ "%.0f"|format(player.market_value) }} دلار</td>
+                <td>
+                    <form method="POST" action="{{ url_for('sell_player', player_id=player.id) }}" style="display:inline;">
+                        <button type="submit" class="btn btn-danger btn-sm">فروش</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

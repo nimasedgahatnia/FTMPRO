@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}مدیریت فوتبال{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="{{ url_for('index') }}" class="brand">⚽ مدیریت فوتبال</a>
+            {% if current_user.is_authenticated %}
+            <div class="nav-links">
+                <a href="{{ url_for('dashboard') }}">داشبورد</a>
+                <a href="{{ url_for('players') }}">بازیکنان</a>
+                <a href="{{ url_for('transfers') }}">انتقالات</a>
+                <a href="{{ url_for('matches') }}">مسابقات</a>
+                <a href="{{ url_for('league_table') }}">جدول لیگ</a>
+                <a href="{{ url_for('logout') }}">خروج</a>
+            </div>
+            {% else %}
+            <div class="nav-links">
+                <a href="{{ url_for('login') }}">ورود</a>
+                <a href="{{ url_for('register') }}">ثبت نام</a>
+            </div>
+            {% endif %}
+        </div>
+    </nav>
+
+    <main class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <p>&copy; 2024 بازی مدیریت فوتبال - الهام گرفته از Hattrick</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}بازار انتقال{% endblock %}
+
+{% block content %}
+<div class="transfers-page">
+    <h1>بازار انتقال بازیکنان</h1>
+    <p>بازیکنانی که قراردادشان به زودی به پایان می‌رسد:</p>
+    
+    {% if available_players %}
+    <table class="players-table">
+        <thead>
+            <tr>
+                <th>نام</th>
+                <th>پست</th>
+                <th>سن</th>
+                <th>امتیاز کلی</th>
+                <th>پتانسیل</th>
+                <th>تیم فعلی</th>
+                <th>ارزش بازار</th>
+                <th>خرید</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for player in available_players %}
+            <tr>
+                <td>{{ player.full_name }}</td>
+                <td>{{ player.position }}</td>
+                <td>{{ player.age }}</td>
+                <td>{{ player.overall_rating }}</td>
+                <td>{{ player.potential }}</td>
+                <td>{{ player.team.name if player.team else 'آزاد' }}</td>
+                <td>{{ "%.0f"|format(player.market_value) }} دلار</td>
+                <td>
+                    <form method="POST" action="{{ url_for('buy_player', player_id=player.id) }}" style="display:inline;">
+                        <button type="submit" class="btn btn-success btn-sm">خرید</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>در حال حاضر بازیکنی برای انتقال موجود نیست.</p>
+    {% endif %}
+</div>
+{% endblock %}
