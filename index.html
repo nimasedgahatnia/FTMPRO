@@ -3,505 +3,870 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>فوتبال مستر - شبیه‌ساز حرفه‌ای فیفا</title>
-    
-    <!-- فونت وزیرمتن -->
-    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Football Master - Ultimate Manager</title>
     
     <!-- Vue 3 -->
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    
-    <!-- آیکون‌ها -->
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Vazirmatn & Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Vazirmatn:wght@300;400;600;700;900&display=swap" rel="stylesheet">
 
-    <style>
-        body {
-            font-family: 'Vazirmatn', sans-serif;
-            background-color: #0f172a;
-            color: #ffffff;
-            overflow-x: hidden;
-        }
-
-        /* اسکرول بار سفارشی */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #1e293b; 
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #3b82f6; 
-            border-radius: 4px;
-        }
-
-        /* افکت‌های شیشه‌ای و نئونی */
-        .glass-panel {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
-        }
-
-        .neon-text {
-            text-shadow: 0 0 10px rgba(59, 130, 246, 0.8), 0 0 20px rgba(59, 130, 246, 0.4);
-        }
-
-        .card-hover:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.5);
-            border-color: #3b82f6;
-        }
-
-        /* انیمیشن‌ها */
-        .fade-enter-active, .fade-leave-active {
-            transition: opacity 0.5s ease;
-        }
-        .fade-enter-from, .fade-leave-to {
-            opacity: 0;
-        }
-
-        .slide-up-enter-active, .slide-up-leave-active {
-            transition: all 0.5s ease;
-        }
-        .slide-up-enter-from, .slide-up-leave-to {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-
-        /* پس‌زمینه متحرک */
-        .animated-bg {
-            background: linear-gradient(-45deg, #0f172a, #1e3a8a, #0f172a, #172554);
-            background-size: 400% 400%;
-            animation: gradient 15s ease infinite;
-        }
-
-        @keyframes gradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* استایل کارت بازیکن فیفا */
-        .fifa-card {
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-            border: 2px solid #334155;
-            clip-path: polygon(10% 0, 100% 0, 100% 90%, 90% 100%, 0 100%, 0 10%);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .fifa-card.gold {
-            border-color: #fbbf24;
-            box-shadow: 0 0 15px rgba(251, 191, 36, 0.3);
-        }
-        
-        .fifa-card.silver {
-            border-color: #94a3b8;
-        }
-
-        .stat-bar {
-            transition: width 1s ease-in-out;
-        }
-        
-        /* افکت گل */
-        .goal-flash {
-            animation: flash 0.5s ease-in-out;
-        }
-        
-        @keyframes flash {
-            0%, 100% { background-color: transparent; }
-            50% { background-color: rgba(34, 197, 94, 0.3); }
-        }
-    </style>
-    
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
+                    fontFamily: {
+                        sans: ['Vazirmatn', 'Inter', 'sans-serif'],
+                    },
                     colors: {
                         primary: '#3b82f6',
-                        secondary: '#8b5cf6',
+                        secondary: '#10b981',
+                        accent: '#f59e0b',
                         dark: '#0f172a',
-                        card: '#1e293b'
+                        surface: '#1e293b',
+                        pitch: '#2d5a27',
+                        pitchLight: '#3a6b32'
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
                     }
                 }
             }
         }
     </script>
-</head>
-<body class="animated-bg min-h-screen flex flex-col">
 
-    <div id="app" class="flex-grow flex flex-col">
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #1e293b; }
+        ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #2563eb; }
+
+        /* Pitch Pattern */
+        .pitch-bg {
+            background-image: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 50px,
+                rgba(255, 255, 255, 0.05) 50px,
+                rgba(255, 255, 255, 0.05) 100px
+            );
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.5);
+        }
+
+        /* Player Card Dragging */
+        .draggable-player { cursor: grab; transition: all 0.2s; }
+        .draggable-player:active { cursor: grabbing; transform: scale(1.05); }
+        .drop-zone { transition: all 0.2s; border: 2px dashed transparent; }
+        .drop-zone.hovered { border-color: #fbbf24; background: rgba(251, 191, 36, 0.2); }
         
-        <!-- نوبار شیشه‌ای -->
-        <nav class="glass-panel sticky top-0 z-50 px-6 py-4 flex justify-between items-center border-b border-gray-700">
+        /* Glassmorphism */
+        .glass {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Face Generation Canvas Hide */
+        .face-canvas { display: none; }
+        
+        [dir="ltr"] { font-family: 'Inter', sans-serif; }
+        
+        .animate-fade-in { animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .animate-fade-in-up { animation: fadeInUp 0.3s ease-out; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="bg-dark text-white overflow-x-hidden selection:bg-primary selection:text-white">
+
+<div id="app" :dir="lang === 'fa' ? 'rtl' : 'ltr'" class="min-h-screen flex flex-col font-sans">
+
+    <!-- Header -->
+    <header class="glass sticky top-0 z-50 shadow-lg">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center gap-3">
-                <i class="fa-solid fa-futbol text-3xl text-blue-500 animate-pulse"></i>
-                <h1 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500 neon-text">
-                    فوتبال مستر
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center text-xl font-bold shadow-neon">
+                    <i class="fas fa-futbol"></i>
+                </div>
+                <h1 class="text-xl md:text-2xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
+                    {{ t('gameTitle') }}
                 </h1>
             </div>
-            <div class="hidden md:flex gap-6 text-gray-300">
-                <a href="#" @click.prevent="currentView = 'home'" :class="{'text-blue-400': currentView === 'home'}" class="hover:text-white transition">خانه</a>
-                <a href="#" @click.prevent="currentView = 'teams'" :class="{'text-blue-400': currentView === 'teams'}" class="hover:text-white transition">تیم‌ها</a>
-                <a href="#" @click.prevent="currentView = 'simulate'" :class="{'text-blue-400': currentView === 'simulate'}" class="hover:text-white transition">شبیه‌سازی</a>
-            </div>
-            <button class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white px-6 py-2 rounded-full font-bold shadow-lg transform hover:scale-105 transition duration-300">
-                ورود / ثبت‌نام
-            </button>
-        </nav>
 
-        <!-- محتوای اصلی -->
-        <main class="container mx-auto px-4 py-8 flex-grow">
-            
-            <transition name="fade" mode="out-in">
+            <div class="flex items-center gap-2 md:gap-4">
+                <!-- Money -->
+                <div class="hidden md:flex items-center gap-2 bg-surface/50 px-3 py-1.5 rounded-full border border-white/10">
+                    <i class="fas fa-coins text-accent"></i>
+                    <span class="font-mono font-bold text-accent">{{ formatMoney(budget) }}</span>
+                </div>
                 
-                <!-- صفحه خانه -->
-                <div v-if="currentView === 'home'" key="home" class="space-y-12">
-                    <!-- هیرو سکشن -->
-                    <div class="text-center py-16 relative">
-                        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-500 rounded-full filter blur-[120px] opacity-20 -z-10"></div>
-                        <h2 class="text-5xl md:text-7xl font-black mb-6 leading-tight">
-                            دنیای فوتبال را <br>
-                            <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400">واقع‌گرایانه تجربه کنید</span>
-                        </h2>
-                        <p class="text-xl text-gray-300 mb-10 max-w-2xl mx-auto">
-                            با پیشرفته‌ترین موتور شبیه‌سازی، تیم رویایی خود را بسازید و در لیگ‌های جهانی رقابت کنید.
-                        </p>
-                        <div class="flex justify-center gap-4">
-                            <button @click="currentView = 'simulate'" class="bg-blue-600 hover:bg-blue-500 text-white text-lg px-8 py-4 rounded-xl font-bold shadow-[0_0_20px_rgba(37,99,235,0.5)] hover:shadow-[0_0_30px_rgba(37,99,235,0.7)] transition-all transform hover:-translate-y-1">
-                                <i class="fa-solid fa-play ml-2"></i> شروع مسابقه
-                            </button>
-                            <button @click="currentView = 'teams'" class="glass-panel hover:bg-white/10 text-white text-lg px-8 py-4 rounded-xl font-bold border border-gray-600 transition-all transform hover:-translate-y-1">
-                                مشاهده تیم‌ها
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- آمار سریع -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div v-for="stat in stats" :key="stat.label" class="glass-panel p-6 rounded-2xl text-center card-hover border-t-4 border-blue-500">
-                            <div class="text-4xl font-bold text-white mb-2">{{ stat.value }}</div>
-                            <div class="text-gray-400">{{ stat.label }}</div>
-                        </div>
-                    </div>
+                <!-- Week/Date -->
+                <div class="hidden md:flex items-center gap-2 bg-surface/50 px-3 py-1.5 rounded-full border border-white/10">
+                    <i class="fas fa-calendar-alt text-secondary"></i>
+                    <span class="font-bold text-sm">{{ t('week') }} {{ currentWeek }}</span>
                 </div>
 
-                <!-- صفحه تیم‌ها -->
-                <div v-else-if="currentView === 'teams'" key="teams" class="space-y-8">
-                    <div class="flex justify-between items-center mb-8">
-                        <h2 class="text-3xl font-bold border-r-4 border-blue-500 pr-4">لیست تیم‌ها و بازیکنان</h2>
-                        <div class="relative">
-                            <input v-model="searchQuery" type="text" placeholder="جستجوی بازیکن..." class="bg-slate-800 border border-slate-600 text-white rounded-full px-6 py-2 focus:outline-none focus:border-blue-500 w-64">
-                            <i class="fa-solid fa-search absolute left-4 top-3 text-gray-400"></i>
-                        </div>
-                    </div>
+                <!-- Lang Switch -->
+                <button @click="toggleLang" class="w-10 h-10 rounded-full bg-surface hover:bg-primary transition-colors flex items-center justify-center border border-white/10">
+                    <span class="text-sm font-bold">{{ lang === 'fa' ? 'EN' : 'FA' }}</span>
+                </button>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                        <div v-for="player in filteredPlayers" :key="player.id" class="fifa-card p-4 relative group cursor-pointer" :class="player.rating >= 85 ? 'gold' : 'silver'">
-                            <!-- افکت هاور -->
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-lg"></div>
-                            
-                            <div class="relative z-10 flex flex-col items-center">
-                                <div class="w-24 h-24 rounded-full bg-slate-700 mb-4 border-4 border-current overflow-hidden relative">
-                                    <img :src="`https://api.dicebear.com/7.x/avataaars/svg?seed=${player.name}&backgroundColor=b6e3f4`" alt="Player" class="w-full h-full object-cover">
-                                </div>
-                                
-                                <div class="text-center w-full">
-                                    <div class="text-3xl font-black italic" :class="player.rating >= 85 ? 'text-yellow-400' : 'text-gray-300'">{{ player.rating }}</div>
-                                    <div class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-2">{{ player.position }}</div>
-                                    <h3 class="text-lg font-bold text-white truncate">{{ player.name }}</h3>
-                                    <p class="text-xs text-blue-400 font-semibold">{{ player.team }}</p>
-                                </div>
+                <!-- Settings -->
+                <button @click="currentTab = 'settings'" class="w-10 h-10 rounded-full bg-surface hover:bg-primary transition-colors flex items-center justify-center border border-white/10">
+                    <i class="fas fa-cog"></i>
+                </button>
+            </div>
+        </div>
+    </header>
 
-                                <!-- آمار جزئی -->
-                                <div class="w-full mt-4 space-y-2 text-xs text-gray-300">
-                                    <div class="flex justify-between">
-                                        <span>PAC</span>
-                                        <div class="w-24 bg-slate-700 rounded-full h-2">
-                                            <div class="bg-green-500 h-2 rounded-full stat-bar" :style="{width: player.pace + '%'}"></div>
-                                        </div>
-                                        <span>{{ player.pace }}</span>
-                                    </div>
-                                    <div class="flex justify-between">
-                                        <span>SHO</span>
-                                        <div class="w-24 bg-slate-700 rounded-full h-2">
-                                            <div class="bg-red-500 h-2 rounded-full stat-bar" :style="{width: player.shooting + '%'}"></div>
-                                        </div>
-                                        <span>{{ player.shooting }}</span>
-                                    </div>
-                                    <div class="flex justify-between">
-                                        <span>PAS</span>
-                                        <div class="w-24 bg-slate-700 rounded-full h-2">
-                                            <div class="bg-blue-500 h-2 rounded-full stat-bar" :style="{width: player.passing + '%'}"></div>
-                                        </div>
-                                        <span>{{ player.passing }}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+    <!-- Main Content -->
+    <main class="flex-grow container mx-auto px-4 py-6 pb-24 md:pb-6">
+        
+        <!-- Dashboard -->
+        <div v-if="currentTab === 'dashboard'" class="space-y-6 animate-fade-in">
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="glass p-4 rounded-2xl border-l-4 border-primary relative overflow-hidden group">
+                    <div class="absolute -right-4 -top-4 text-6xl text-white/5 group-hover:scale-110 transition-transform"><i class="fas fa-users"></i></div>
+                    <p class="text-gray-400 text-sm">{{ t('teamStrength') }}</p>
+                    <h3 class="text-2xl font-bold mt-1">{{ calculateTeamStrength() }}</h3>
                 </div>
-
-                <!-- صفحه شبیه‌سازی -->
-                <div v-else-if="currentView === 'simulate'" key="simulate" class="max-w-5xl mx-auto">
-                    <div class="glass-panel rounded-3xl overflow-hidden border border-gray-700 shadow-2xl" :class="goalFlash ? 'goal-flash' : ''">
-                        
-                        <!-- هدر مسابقه -->
-                        <div class="bg-slate-900 p-6 flex justify-between items-center border-b border-gray-700">
-                            <div class="text-center w-1/3">
-                                <h3 class="text-2xl font-bold text-white">{{ match.homeTeam.name }}</h3>
-                                <div class="text-sm text-gray-400 mt-1">میانگین قدرت: {{ match.homeTeam.avgRating }}</div>
-                            </div>
-                            <div class="text-center w-1/3">
-                                <div class="text-5xl font-black text-yellow-400 font-mono tracking-widest">
-                                    {{ match.score.home }} - {{ match.score.away }}
-                                </div>
-                                <div class="text-sm text-gray-400 mt-2">دقیقه: {{ match.minute }}'</div>
-                            </div>
-                            <div class="text-center w-1/3">
-                                <h3 class="text-2xl font-bold text-white">{{ match.awayTeam.name }}</h3>
-                                <div class="text-sm text-gray-400 mt-1">میانگین قدرت: {{ match.awayTeam.avgRating }}</div>
-                            </div>
-                        </div>
-
-                        <!-- زمین بازی (نمایش گرافیکی ساده) -->
-                        <div class="relative h-64 bg-green-900 overflow-hidden border-b border-gray-700">
-                            <!-- خطوط زمین -->
-                            <div class="absolute inset-0 border-4 border-white/30 m-4 rounded-lg"></div>
-                            <div class="absolute top-0 bottom-0 left-1/2 w-1 bg-white/30 -translate-x-1/2"></div>
-                            <div class="absolute top-1/2 left-1/2 w-32 h-32 border-2 border-white/30 rounded-full -translate-x-1/2 -translate-y-1/2"></div>
-                            
-                            <!-- بازیکنان (نقاط متحرک) -->
-                            <div v-for="ball in match.ballHistory" :key="ball.id" class="absolute w-4 h-4 bg-yellow-400 rounded-full shadow-[0_0_10px_yellow] z-20 transition-all duration-1000 ease-linear"
-                                 :style="{ left: ball.x + '%', top: ball.y + '%' }"></div>
-                            
-                            <div v-if="match.isLive" class="absolute inset-0 flex items-center justify-center">
-                                <span class="bg-black/50 text-white px-4 py-2 rounded-full text-sm animate-pulse">در حال پخش زنده...</span>
-                            </div>
-                        </div>
-
-                        <!-- کنترل‌ها و گزارش -->
-                        <div class="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <!-- دکمه‌ها -->
-                            <div class="col-span-1 flex flex-col gap-4">
-                                <button @click="startMatch" :disabled="match.isLive || match.isFinished" 
-                                    class="w-full py-4 rounded-xl font-bold text-lg transition-all transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
-                                    :class="match.isFinished ? 'bg-gray-600' : 'bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-400 hover:to-emerald-500 text-white shadow-lg shadow-green-900/50'">
-                                    <i class="fa-solid fa-flag-checkered ml-2"></i>
-                                    {{ match.isFinished ? 'پایان بازی' : (match.isLive ? 'در حال برگزاری' : 'شروع مسابقه') }}
-                                </button>
-                                
-                                <button @click="resetMatch" class="w-full py-3 rounded-xl font-bold bg-slate-700 hover:bg-slate-600 text-white transition">
-                                    <i class="fa-solid fa-rotate-right ml-2"></i> ریست کردن
-                                </button>
-
-                                <div class="mt-4 p-4 bg-slate-800 rounded-xl border border-slate-700">
-                                    <h4 class="font-bold text-gray-300 mb-2">احتمال برد</h4>
-                                    <div class="flex h-4 rounded-full overflow-hidden">
-                                        <div class="bg-blue-500 transition-all duration-500" :style="{ width: match.winProbability.home + '%' }"></div>
-                                        <div class="bg-gray-600 transition-all duration-500" :style="{ width: match.winProbability.draw + '%' }"></div>
-                                        <div class="bg-red-500 transition-all duration-500" :style="{ width: match.winProbability.away + '%' }"></div>
-                                    </div>
-                                    <div class="flex justify-between text-xs text-gray-400 mt-1">
-                                        <span>{{ match.homeTeam.name }}</span>
-                                        <span>مساوی</span>
-                                        <span>{{ match.awayTeam.name }}</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- گزارش زنده -->
-                            <div class="col-span-1 md:col-span-2 bg-slate-900 rounded-xl p-4 h-64 overflow-y-auto border border-gray-700 font-mono text-sm">
-                                <div v-for="(log, index) in match.logs" :key="index" class="mb-2 border-b border-gray-800 pb-2 last:border-0 animate-pulse">
-                                    <span class="text-yellow-500 font-bold ml-2">{{ log.minute }}'</span>
-                                    <span :class="log.type === 'goal' ? 'text-green-400 font-bold' : 'text-gray-300'">
-                                        {{ log.text }}
-                                    </span>
-                                </div>
-                                <div v-if="match.logs.length === 0" class="text-gray-500 text-center mt-10">
-                                    هنوز اتفاقی نیفتاده است...
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="glass p-4 rounded-2xl border-l-4 border-secondary relative overflow-hidden group">
+                    <div class="absolute -right-4 -top-4 text-6xl text-white/5 group-hover:scale-110 transition-transform"><i class="fas fa-chart-line"></i></div>
+                    <p class="text-gray-400 text-sm">{{ t('form') }}</p>
+                    <h3 class="text-2xl font-bold mt-1 text-green-400">W W D</h3>
                 </div>
-
-            </transition>
-        </main>
-
-        <!-- فوتر -->
-        <footer class="glass-panel border-t border-gray-700 mt-auto py-8">
-            <div class="container mx-auto px-4 text-center text-gray-400">
-                <p>&copy; 2024 فوتبال مستر. تمام حقوق محفوظ است.</p>
-                <div class="flex justify-center gap-4 mt-4">
-                    <a href="#" class="hover:text-blue-400 transition"><i class="fa-brands fa-instagram text-xl"></i></a>
-                    <a href="#" class="hover:text-blue-400 transition"><i class="fa-brands fa-twitter text-xl"></i></a>
-                    <a href="#" class="hover:text-blue-400 transition"><i class="fa-brands fa-discord text-xl"></i></a>
+                <div class="glass p-4 rounded-2xl border-l-4 border-accent relative overflow-hidden group">
+                    <div class="absolute -right-4 -top-4 text-6xl text-white/5 group-hover:scale-110 transition-transform"><i class="fas fa-tshirt"></i></div>
+                    <p class="text-gray-400 text-sm">{{ t('marketValue') }}</p>
+                    <h3 class="text-xl font-bold mt-1">{{ formatMoney(calculateMarketValue()) }}</h3>
+                </div>
+                <div class="glass p-4 rounded-2xl border-l-4 border-purple-500 relative overflow-hidden group">
+                    <div class="absolute -right-4 -top-4 text-6xl text-white/5 group-hover:scale-110 transition-transform"><i class="fas fa-flag"></i></div>
+                    <p class="text-gray-400 text-sm">{{ t('leaguePos') }}</p>
+                    <h3 class="text-2xl font-bold mt-1">#3</h3>
                 </div>
             </div>
-        </footer>
 
+            <!-- Next Match & News -->
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- Next Match Card -->
+                <div class="md:col-span-2 glass rounded-2xl p-6 relative overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent pointer-events-none"></div>
+                    <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                        <i class="fas fa-stopwatch text-accent"></i> {{ t('nextMatch') }}
+                    </h2>
+                    <div class="flex justify-between items-center bg-surface/50 rounded-xl p-4 border border-white/5">
+                        <div class="text-center w-1/3">
+                            <div class="w-16 h-16 mx-auto bg-white rounded-full flex items-center justify-center text-3xl mb-2 shadow-lg">
+                                {{ teamConfig.logo || '🛡️' }}
+                            </div>
+                            <h3 class="font-bold text-lg">{{ teamConfig.name }}</h3>
+                            <p class="text-xs text-gray-400">{{ t('home') }}</p>
+                        </div>
+                        <div class="text-center w-1/3">
+                            <div class="text-3xl font-black text-gray-500">VS</div>
+                            <div class="text-sm text-accent mt-1 font-mono">20:45</div>
+                        </div>
+                        <div class="text-center w-1/3">
+                            <div class="w-16 h-16 mx-auto bg-red-600 rounded-full flex items-center justify-center text-3xl mb-2 shadow-lg">
+                                🦁
+                            </div>
+                            <h3 class="font-bold text-lg">Real Madrid</h3>
+                            <p class="text-xs text-gray-400">{{ t('away') }}</p>
+                        </div>
+                    </div>
+                    <button @click="startMatchSimulation" class="w-full mt-4 bg-gradient-to-r from-primary to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white font-bold py-3 rounded-xl shadow-lg transform hover:-translate-y-1 transition-all flex items-center justify-center gap-2">
+                        <i class="fas fa-play"></i> {{ t('simulateMatch') }}
+                    </button>
+                </div>
+
+                <!-- Staff Quick View -->
+                <div class="glass rounded-2xl p-6">
+                    <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                        <i class="fas fa-user-tie text-purple-400"></i> {{ t('coachingStaff') }}
+                    </h2>
+                    <div class="space-y-3">
+                        <div v-for="staff in coachingStaff" :key="staff.id" class="flex items-center gap-3 bg-surface/50 p-2 rounded-lg border border-white/5">
+                            <div class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-lg">
+                                {{ staff.icon }}
+                            </div>
+                            <div class="flex-grow">
+                                <h4 class="font-bold text-sm">{{ staff.name }}</h4>
+                                <p class="text-xs text-gray-400">{{ t(staff.roleKey) }} • {{ t('level') }} {{ staff.level }}</p>
+                            </div>
+                        </div>
+                        <button @click="currentTab = 'staff'" class="w-full mt-2 text-xs text-primary hover:underline">{{ t('manageStaff') }}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Squad & Tactics (PES Style) -->
+        <div v-if="currentTab === 'squad'" class="h-[calc(100vh-140px)] flex flex-col md:flex-row gap-4 animate-fade-in">
+            <!-- Players List (Sidebar) -->
+            <div class="w-full md:w-1/3 glass rounded-2xl p-4 overflow-y-auto">
+                <h2 class="text-xl font-bold mb-4 sticky top-0 bg-dark/90 backdrop-blur py-2 z-10">{{ t('squadList') }}</h2>
+                <div class="space-y-2">
+                    <div v-for="player in myPlayers" :key="player.id" 
+                         draggable="true" 
+                         @dragstart="dragPlayer($event, player)"
+                         class="draggable-player bg-surface hover:bg-surface/80 p-3 rounded-xl border border-white/5 flex items-center gap-3 cursor-grab active:cursor-grabbing group">
+                        <!-- Generated Face -->
+                        <canvas :ref="el => drawFace(el, player.faceSeed)" width="40" height="40" class="rounded-full bg-gray-800"></canvas>
+                        
+                        <div class="flex-grow">
+                            <div class="flex justify-between items-center">
+                                <h4 class="font-bold text-sm group-hover:text-primary transition-colors">{{ player.name }}</h4>
+                                <span :class="getOvrColor(player.ovr)" class="font-mono font-bold text-xs bg-black/30 px-1.5 rounded">{{ player.ovr }}</span>
+                            </div>
+                            <p class="text-xs text-gray-400">{{ t(player.position) }} • {{ player.age }} {{ t('yearsOld') }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pitch (Drop Zone) -->
+            <div class="w-full md:w-2/3 glass rounded-2xl p-2 relative flex flex-col">
+                <div class="absolute top-4 right-4 z-20 bg-black/60 backdrop-blur px-3 py-1 rounded-full text-xs font-bold border border-white/10">
+                    {{ t('dragAndDrop') }}
+                </div>
+                
+                <!-- The Pitch -->
+                <div class="flex-grow pitch-bg rounded-xl relative overflow-hidden border-4 border-white/20 select-none">
+                    <!-- Pitch Lines -->
+                    <div class="absolute inset-0 border-2 border-white/30 m-4 rounded-sm"></div>
+                    <div class="absolute top-1/2 left-0 right-0 h-0.5 bg-white/30"></div>
+                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 border-2 border-white/30 rounded-full"></div>
+                    
+                    <!-- Drop Zones (Positions) -->
+                    <div v-for="(pos, index) in formationPositions" :key="index"
+                         @dragover.prevent="hoverZone(index)"
+                         @dragleave="leaveZone(index)"
+                         @drop="dropPlayer($event, pos)"
+                         :class="['drop-zone absolute transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center transition-all', getPosStyle(pos)]">
+                        
+                        <!-- Slot Empty State -->
+                        <div v-if="!lineup[pos]" class="w-16 h-16 rounded-full border-2 border-dashed border-white/30 bg-black/20 flex items-center justify-center text-white/20 text-2xl">
+                            <i class="fas fa-plus"></i>
+                        </div>
+
+                        <!-- Player in Slot -->
+                        <div v-else class="relative group cursor-pointer" @click="removeFromLineup(pos)">
+                            <canvas :ref="el => drawFace(el, lineup[pos].faceSeed, 64)" width="64" height="64" class="rounded-full border-2 border-white shadow-lg z-10 relative bg-gray-800"></canvas>
+                            <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-center whitespace-nowrap z-20">
+                                <span :class="getOvrColor(lineup[pos].ovr)" class="font-black text-sm drop-shadow-md bg-black/50 px-1 rounded">{{ lineup[pos].ovr }}</span>
+                                <p class="text-[10px] font-bold text-white drop-shadow-md leading-none mt-1">{{ lineup[pos].name.split(' ')[0] }}</p>
+                            </div>
+                            <!-- Hover Remove -->
+                            <div class="absolute inset-0 bg-red-500/80 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-30">
+                                <i class="fas fa-times text-white"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="h-12 flex items-center justify-between px-4 mt-2">
+                    <span class="text-xs text-gray-400">{{ t('formation') }}: 4-4-2</span>
+                    <button @click="clearLineup" class="text-xs text-red-400 hover:text-red-300">{{ t('clearFormation') }}</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Market -->
+        <div v-if="currentTab === 'market'" class="animate-fade-in">
+            <div class="glass rounded-2xl p-6">
+                <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+                    <h2 class="text-2xl font-bold flex items-center gap-2"><i class="fas fa-globe text-accent"></i> {{ t('transferMarket') }}</h2>
+                    <div class="flex gap-2">
+                        <input v-model="marketFilter" type="text" :placeholder="t('searchPlayer')" class="bg-surface border border-white/10 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-primary">
+                        <select v-model="marketPosFilter" class="bg-surface border border-white/10 rounded-lg px-4 py-2 text-sm focus:outline-none">
+                            <option value="">{{ t('allPositions') }}</option>
+                            <option value="GK">GK</option>
+                            <option value="DEF">DEF</option>
+                            <option value="MID">MID</option>
+                            <option value="FWD">FWD</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="text-gray-400 text-sm border-b border-white/10">
+                                <th class="p-3">{{ t('player') }}</th>
+                                <th class="p-3">{{ t('age') }}</th>
+                                <th class="p-3">{{ t('position') }}</th>
+                                <th class="p-3">{{ t('strength') }}</th>
+                                <th class="p-3">{{ t('price') }}</th>
+                                <th class="p-3 text-center">{{ t('action') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="player in filteredMarketPlayers" :key="player.id" class="border-b border-white/5 hover:bg-white/5 transition-colors">
+                                <td class="p-3">
+                                    <div class="flex items-center gap-3">
+                                        <canvas :ref="el => drawFace(el, player.faceSeed, 32)" width="32" height="32" class="rounded-full bg-gray-800"></canvas>
+                                        <div>
+                                            <div class="font-bold">{{ player.name }}</div>
+                                            <div class="text-xs text-gray-500">{{ player.nationality }}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="p-3 text-sm">{{ player.age }}</td>
+                                <td class="p-3"><span class="bg-surface px-2 py-1 rounded text-xs font-mono">{{ player.position }}</span></td>
+                                <td class="p-3"><span :class="getOvrColor(player.ovr)" class="font-bold">{{ player.ovr }}</span></td>
+                                <td class="p-3 font-mono text-accent">{{ formatMoney(player.price) }}</td>
+                                <td class="p-3 text-center">
+                                    <button @click="buyPlayer(player)" :disabled="budget < player.price" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed" :class="budget >= player.price ? 'bg-green-600 hover:bg-green-500 text-white' : 'bg-gray-700 text-gray-400'">
+                                        {{ t('buy') }}
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Coaching Staff -->
+        <div v-if="currentTab === 'staff'" class="animate-fade-in">
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Current Staff -->
+                <div class="md:col-span-2 glass rounded-2xl p-6">
+                    <h2 class="text-xl font-bold mb-4">{{ t('currentStaff') }}</h2>
+                    <div class="space-y-4">
+                        <div v-for="staff in coachingStaff" :key="staff.id" class="flex items-center gap-4 bg-surface/50 p-4 rounded-xl border border-white/5">
+                            <div class="w-16 h-16 rounded-full bg-gradient-to-br from-purple-600 to-indigo-800 flex items-center justify-center text-3xl shadow-lg">
+                                {{ staff.icon }}
+                            </div>
+                            <div class="flex-grow">
+                                <h3 class="font-bold text-lg">{{ staff.name }}</h3>
+                                <p class="text-sm text-gray-400">{{ t(staff.roleKey) }}</p>
+                                <div class="mt-2 w-full bg-gray-700 rounded-full h-2">
+                                    <div class="bg-purple-500 h-2 rounded-full" :style="{ width: (staff.level / 10) * 100 + '%' }"></div>
+                                </div>
+                                <p class="text-xs text-right mt-1 text-purple-300">{{ t('effectiveness') }}: {{ staff.level * 5 }}%</p>
+                            </div>
+                            <button @click="fireStaff(staff.id)" class="text-red-400 hover:text-red-300 p-2"><i class="fas fa-trash"></i></button>
+                        </div>
+                        <div v-if="coachingStaff.length === 0" class="text-center py-8 text-gray-500">{{ t('noStaffHired') }}</div>
+                    </div>
+                </div>
+
+                <!-- Hire New -->
+                <div class="glass rounded-2xl p-6">
+                    <h2 class="text-xl font-bold mb-4">{{ t('hireNewStaff') }}</h2>
+                    <div class="space-y-3">
+                        <div v-for="candidate in availableStaff" :key="candidate.id" class="bg-surface p-3 rounded-xl border border-white/5 hover:border-primary transition-colors cursor-pointer" @click="hireStaff(candidate)">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h4 class="font-bold">{{ candidate.name }}</h4>
+                                    <p class="text-xs text-gray-400">{{ t(candidate.roleKey) }}</p>
+                                </div>
+                                <span class="text-accent font-mono text-sm">{{ formatMoney(candidate.salary) }}</span>
+                            </div>
+                            <div class="mt-2 flex items-center gap-2 text-xs text-gray-400">
+                                <i class="fas fa-star text-yellow-500"></i>
+                                <span>{{ t('level') }} {{ candidate.level }}/10</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Calendar -->
+        <div v-if="currentTab === 'calendar'" class="animate-fade-in">
+            <div class="glass rounded-2xl p-6">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-2"><i class="fas fa-calendar-alt text-secondary"></i> {{ t('seasonCalendar') }}</h2>
+                <div class="grid grid-cols-7 gap-2 text-center mb-4 font-bold text-gray-400 text-sm">
+                    <div v-for="day in ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']" :key="day">{{ day }}</div>
+                </div>
+                <div class="grid grid-cols-7 gap-2">
+                    <div v-for="n in 30" :key="n" 
+                         class="aspect-square bg-surface/30 rounded-lg flex flex-col items-center justify-center relative border border-white/5 hover:border-white/20 transition-colors cursor-pointer group"
+                         :class="{ 'bg-primary/20 border-primary': n === currentWeek }">
+                        <span class="text-sm font-mono">{{ n }}</span>
+                        <!-- Event Dot -->
+                        <div v-if="n % 3 === 0" class="absolute bottom-2 w-2 h-2 rounded-full" :class="n % 6 === 0 ? 'bg-red-500' : 'bg-green-500'"></div>
+                        <!-- Tooltip -->
+                        <div class="absolute bottom-full mb-2 hidden group-hover:block w-32 bg-black text-white text-xs p-2 rounded z-50 text-center">
+                            {{ n % 3 === 0 ? (n % 6 === 0 ? t('matchAway') : t('matchHome')) : t('training') }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings -->
+        <div v-if="currentTab === 'settings'" class="max-w-2xl mx-auto animate-fade-in">
+            <div class="glass rounded-2xl p-8">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-2"><i class="fas fa-sliders-h"></i> {{ t('settings') }}</h2>
+                
+                <div class="space-y-6">
+                    <!-- Team Name -->
+                    <div>
+                        <label class="block text-sm font-bold mb-2 text-gray-400">{{ t('teamName') }}</label>
+                        <input v-model="teamConfig.name" class="w-full bg-surface border border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-primary transition-colors">
+                    </div>
+
+                    <!-- Team Logo (Emoji Picker Simulation) -->
+                    <div>
+                        <label class="block text-sm font-bold mb-2 text-gray-400">{{ t('teamLogo') }}</label>
+                        <div class="flex gap-2 overflow-x-auto pb-2">
+                            <button v-for="emoji in ['🛡️', '🦁', '🦅', '🐺', '⚔️', '👑', '🔥', '💀']" 
+                                :key="emoji"
+                                @click="teamConfig.logo = emoji"
+                                class="w-12 h-12 flex-shrink-0 rounded-lg bg-surface border-2 flex items-center justify-center text-2xl hover:scale-110 transition-transform"
+                                :class="teamConfig.logo === emoji ? 'border-primary bg-primary/20' : 'border-white/10'">
+                                {{ emoji }}
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Primary Color -->
+                    <div>
+                        <label class="block text-sm font-bold mb-2 text-gray-400">{{ t('teamColor') }}</label>
+                        <div class="flex gap-3">
+                            <input type="color" v-model="teamConfig.color" class="h-10 w-20 rounded cursor-pointer bg-transparent border-0">
+                            <span class="text-xs text-gray-500 self-center">{{ t('pickColor') }}</span>
+                        </div>
+                    </div>
+
+                    <div class="pt-6 border-t border-white/10">
+                        <button @click="saveSettings" class="w-full bg-primary hover:bg-blue-600 text-white font-bold py-3 rounded-xl transition-colors shadow-lg">
+                            {{ t('saveChanges') }}
+                        </button>
+                        <button @click="resetSettings" class="w-full mt-3 text-red-400 text-sm hover:underline">
+                            {{ t('resetDefaults') }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 glass border-t border-white/10 z-50 pb-safe">
+        <div class="flex justify-around items-center h-16">
+            <button @click="currentTab = 'dashboard'" :class="currentTab === 'dashboard' ? 'text-primary' : 'text-gray-500'" class="flex flex-col items-center justify-center w-full h-full">
+                <i class="fas fa-home text-xl mb-1"></i>
+                <span class="text-[10px]">{{ t('home') }}</span>
+            </button>
+            <button @click="currentTab = 'squad'" :class="currentTab === 'squad' ? 'text-primary' : 'text-gray-500'" class="flex flex-col items-center justify-center w-full h-full">
+                <i class="fas fa-users text-xl mb-1"></i>
+                <span class="text-[10px]">{{ t('squad') }}</span>
+            </button>
+            <button @click="currentTab = 'market'" :class="currentTab === 'market' ? 'text-primary' : 'text-gray-500'" class="flex flex-col items-center justify-center w-full h-full">
+                <i class="fas fa-shopping-cart text-xl mb-1"></i>
+                <span class="text-[10px]">{{ t('market') }}</span>
+            </button>
+            <button @click="currentTab = 'staff'" :class="currentTab === 'staff' ? 'text-primary' : 'text-gray-500'" class="flex flex-col items-center justify-center w-full h-full">
+                <i class="fas fa-user-tie text-xl mb-1"></i>
+                <span class="text-[10px]">{{ t('staff') }}</span>
+            </button>
+            <button @click="currentTab = 'calendar'" :class="currentTab === 'calendar' ? 'text-primary' : 'text-gray-500'" class="flex flex-col items-center justify-center w-full h-full">
+                <i class="fas fa-calendar text-xl mb-1"></i>
+                <span class="text-[10px]">{{ t('calendar') }}</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Match Simulation Modal -->
+    <div v-if="isMatchRunning" class="fixed inset-0 z-[100] bg-black/90 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-surface w-full max-w-4xl rounded-2xl overflow-hidden shadow-2xl border border-white/10 flex flex-col max-h-[90vh]">
+            <!-- Scoreboard -->
+            <div class="bg-gradient-to-r from-gray-900 to-black p-6 flex justify-between items-center border-b border-white/10">
+                <div class="text-center w-1/3">
+                    <div class="text-4xl mb-2">{{ teamConfig.logo }}</div>
+                    <h3 class="font-bold text-lg">{{ teamConfig.name }}</h3>
+                </div>
+                <div class="text-center w-1/3">
+                    <div class="text-5xl font-mono font-black text-white tracking-widest">
+                        {{ homeScore }} - {{ awayScore }}
+                    </div>
+                    <div class="text-accent font-bold mt-1 animate-pulse">{{ matchTime }}'</div>
+                </div>
+                <div class="text-center w-1/3">
+                    <div class="text-4xl mb-2">🦁</div>
+                    <h3 class="font-bold text-lg">Real Madrid</h3>
+                </div>
+            </div>
+            
+            <!-- Live Commentary -->
+            <div class="flex-grow p-6 overflow-y-auto space-y-3 bg-black/50" ref="commentaryBox">
+                <div v-for="(log, i) in matchLogs" :key="i" class="flex gap-3 animate-fade-in-up">
+                    <span class="text-gray-500 font-mono text-sm min-w-[40px]">{{ log.time }}'</span>
+                    <div :class="log.type === 'goal' ? 'text-green-400 font-bold' : 'text-gray-300'">
+                        {{ log.text }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="p-4 bg-surface border-t border-white/10 flex justify-end gap-3">
+                <button v-if="matchFinished" @click="closeMatch" class="px-6 py-2 bg-primary hover:bg-blue-600 rounded-lg font-bold transition-colors">
+                    {{ t('continue') }}
+                </button>
+            </div>
+        </div>
     </div>
 
-    <script>
-        const { createApp, ref, computed, onMounted } = Vue;
+</div>
 
-        createApp({
-            setup() {
-                const currentView = ref('home');
-                const searchQuery = ref('');
-                const goalFlash = ref(false);
+<script>
+    const { createApp, ref, computed, onMounted, nextTick } = Vue;
 
-                // داده‌های نمونه بازیکنان واقعی (شبیه‌سازی شده)
-                const playersData = [
-                    { id: 1, name: 'لیونل مسی', team: 'اینتر میامی', position: 'RW', rating: 93, pace: 85, shooting: 92, passing: 91 },
-                    { id: 2, name: 'کریستیانو رونالدو', team: 'النصر', position: 'ST', rating: 91, pace: 82, shooting: 93, passing: 82 },
-                    { id: 3, name: 'کیلین امباپه', team: 'رئال مادرید', position: 'ST', rating: 94, pace: 97, shooting: 91, passing: 83 },
-                    { id: 4, name: 'ارلینگ هالند', team: 'منچستر سیتی', position: 'ST', rating: 93, pace: 89, shooting: 94, passing: 75 },
-                    { id: 5, name: 'کوین دی بروینه', team: 'منچستر سیتی', position: 'CM', rating: 92, pace: 76, shooting: 86, passing: 94 },
-                    { id: 6, name: 'وینیسیوس جونیور', team: 'رئال مادرید', position: 'LW', rating: 90, pace: 95, shooting: 84, passing: 83 },
-                    { id: 7, name: 'جود بلینگام', team: 'رئال مادرید', position: 'CAM', rating: 90, pace: 84, shooting: 85, passing: 88 },
-                    { id: 8, name: 'محمد صلاح', team: 'لیورپول', position: 'RW', rating: 89, pace: 90, shooting: 88, passing: 82 },
-                    { id: 9, name: 'هری کین', team: 'بایرن مونیخ', position: 'ST', rating: 90, pace: 75, shooting: 92, passing: 86 },
-                    { id: 10, name: 'رودری', team: 'منچستر سیتی', position: 'CDM', rating: 90, pace: 70, shooting: 78, passing: 89 },
-                    { id: 11, name: 'علیرضا بیرانوند', team: 'پرسپولیس', position: 'GK', rating: 78, pace: 60, shooting: 50, passing: 70 },
-                    { id: 12, name: 'مهدی طارمی', team: 'اینتر', position: 'ST', rating: 84, pace: 82, shooting: 83, passing: 78 },
-                ];
+    createApp({
+        setup() {
+            // --- State ---
+            const lang = ref('fa');
+            const currentTab = ref('dashboard');
+            const currentWeek = ref(1);
+            const budget = ref(50000000);
+            const isMatchRunning = ref(false);
+            const matchFinished = ref(false);
+            const homeScore = ref(0);
+            const awayScore = ref(0);
+            const matchTime = ref(0);
+            const matchLogs = ref([]);
+            const marketFilter = ref('');
+            const marketPosFilter = ref('');
 
-                const stats = ref([
-                    { label: 'بازیکنان ثبت‌نام شده', value: '12,450' },
-                    { label: 'مسابقات شبیه‌سازی شده', value: '85,320' },
-                    { label: 'جوایز فصلی', value: '$50,000' }
-                ]);
+            // Team Config
+            const teamConfig = ref({
+                name: 'My FC',
+                logo: '🛡️',
+                color: '#3b82f6'
+            });
 
-                const filteredPlayers = computed(() => {
-                    if (!searchQuery.value) return playersData;
-                    return playersData.filter(p => 
-                        p.name.includes(searchQuery.value) || 
-                        p.team.includes(searchQuery.value)
-                    );
-                });
+            // Data Generators
+            const firstNames = { en: ['James', 'John', 'Robert', 'Michael', 'William', 'David', 'Richard', 'Joseph', 'Thomas', 'Charles'], fa: ['علی', 'محمد', 'حسین', 'رضا', 'مهدی', 'امیر', 'آرش', 'کریم', 'سعید', 'بهنام'] };
+            const lastNames = { en: ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis', 'Rodriguez', 'Martinez'], fa: ['محمدی', 'حسینی', 'رضایی', 'کریمی', 'احمدی', 'مرادی', 'کاظمی', 'عباسی', 'طالبی', 'نوری'] };
+            const positions = ['GK', 'DEF', 'DEF', 'DEF', 'DEF', 'MID', 'MID', 'MID', 'MID', 'FWD', 'FWD'];
+            
+            // Coaching Staff
+            const coachingStaff = ref([
+                { id: 1, name: 'Carlo Ancelotti', roleKey: 'headCoach', level: 9, icon: '🎩', salary: 500000 },
+                { id: 2, name: 'Pepe Reina', roleKey: 'goalkeeperCoach', level: 7, icon: '🧤', salary: 150000 }
+            ]);
 
-                // منطق شبیه‌سازی مسابقه
-                const match = ref({
-                    homeTeam: { name: 'رئال مادرید', avgRating: 91, players: [] },
-                    awayTeam: { name: 'منچستر سیتی', avgRating: 90, players: [] },
-                    score: { home: 0, away: 0 },
-                    minute: 0,
-                    isLive: false,
-                    isFinished: false,
-                    logs: [],
-                    ballHistory: [],
-                    winProbability: { home: 45, draw: 25, away: 30 },
-                    timer: null
-                });
+            const availableStaff = ref([
+                { id: 101, name: 'Usain Bolt', roleKey: 'fitnessCoach', level: 8, icon: '⚡', salary: 200000 },
+                { id: 102, name: 'Jose Mourinho', roleKey: 'assistantCoach', level: 9, icon: '🕶️', salary: 400000 },
+                { id: 103, name: 'Sir Alex', roleKey: 'scout', level: 10, icon: '🔭', salary: 300000 }
+            ]);
 
-                const startMatch = () => {
-                    if (match.value.isLive || match.value.isFinished) return;
-                    
-                    match.value.isLive = true;
-                    match.value.isFinished = false;
-                    match.value.score = { home: 0, away: 0 };
-                    match.value.minute = 0;
-                    match.value.logs = [{ minute: 0, text: 'سوت آغاز بازی زده شد!', type: 'info' }];
-                    match.value.ballHistory = [];
+            // Players
+            const myPlayers = ref([]);
+            const marketPlayers = ref([]);
+            const lineup = ref({}); // { 'GK': player, 'DEF_1': player ... }
+            const formationPositions = [
+                { id: 'GK', top: '90%', left: '50%' },
+                { id: 'DEF_1', top: '75%', left: '20%' }, { id: 'DEF_2', top: '75%', left: '40%' }, { id: 'DEF_3', top: '75%', left: '60%' }, { id: 'DEF_4', top: '75%', left: '80%' },
+                { id: 'MID_1', top: '50%', left: '20%' }, { id: 'MID_2', top: '50%', left: '40%' }, { id: 'MID_3', top: '50%', left: '60%' }, { id: 'MID_4', top: '50%', left: '80%' },
+                { id: 'FWD_1', top: '25%', left: '40%' }, { id: 'FWD_2', top: '25%', left: '60%' }
+            ];
 
-                    match.value.timer = setInterval(() => {
-                        simulateMinute();
-                    }, 100); // سرعت شبیه‌سازی (هر 100 میلی ثانیه 1 دقیقه بازی)
-                };
+            // Translations
+            const translations = {
+                fa: {
+                    gameTitle: 'فوتبال مستر', home: 'خانه', squad: 'ترکیب', market: 'بازار', staff: 'کادر', calendar: 'تقویم', settings: 'تنظیمات',
+                    teamStrength: 'قدرت تیم', form: 'فرم اخیر', marketValue: 'ارزش بازار', leaguePos: 'رتبه لیگ',
+                    nextMatch: 'بازی بعدی', simulateMatch: 'شبیه‌سازی بازی', coachingStaff: 'کادر فنی', manageStaff: 'مدیریت کادر',
+                    squadList: 'لیست بازیکنان', dragAndDrop: 'بازیکنان را بکشید و رها کنید', formation: 'تشکیلات', clearFormation: 'پاک کردن',
+                    transferMarket: 'بازار نقل و انتقالات', searchPlayer: 'جستجو...', allPositions: 'همه پست‌ها', player: 'بازیکن', age: 'سن', position: 'پست', strength: 'قدرت', price: 'قیمت', action: 'عملیات', buy: 'خرید',
+                    currentStaff: 'کادر فعلی', hireNewStaff: 'استخدام جدید', effectiveness: 'اثربخشی', noStaffHired: 'هیچ مربی استخدام نشده است',
+                    seasonCalendar: 'تقویم فصل', matchHome: 'بازی خانگی', matchAway: 'بازی خارج', training: 'تمرین',
+                    teamName: 'نام تیم', teamLogo: 'لوگو', teamColor: 'رنگ اصلی', pickColor: 'انتخاب رنگ', saveChanges: 'ذخیره تغییرات', resetDefaults: 'بازنشانی',
+                    headCoach: 'سرمربی', goalkeeperCoach: 'مربی دروازه‌بان', fitnessCoach: 'مربی بدنسازی', assistantCoach: 'مربی کمک', scout: 'اسکاوتر',
+                    yearsOld: 'ساله', continue: 'ادامه', week: 'هفته', level: 'سطح', GK: 'دروازه‌بان', DEF: 'مدافع', MID: 'هافبک', FWD: 'مهاجم'
+                },
+                en: {
+                    gameTitle: 'Football Master', home: 'Home', squad: 'Squad', market: 'Market', staff: 'Staff', calendar: 'Calendar', settings: 'Settings',
+                    teamStrength: 'Team Strength', form: 'Recent Form', marketValue: 'Market Value', leaguePos: 'League Pos',
+                    nextMatch: 'Next Match', simulateMatch: 'Simulate Match', coachingStaff: 'Coaching Staff', manageStaff: 'Manage Staff',
+                    squadList: 'Squad List', dragAndDrop: 'Drag & Drop Players', formation: 'Formation', clearFormation: 'Clear',
+                    transferMarket: 'Transfer Market', searchPlayer: 'Search...', allPositions: 'All Positions', player: 'Player', age: 'Age', position: 'Position', strength: 'OVR', price: 'Price', action: 'Action', buy: 'Buy',
+                    currentStaff: 'Current Staff', hireNewStaff: 'Hire New', effectiveness: 'Effectiveness', noStaffHired: 'No staff hired yet',
+                    seasonCalendar: 'Season Calendar', matchHome: 'Home Match', matchAway: 'Away Match', training: 'Training',
+                    teamName: 'Team Name', teamLogo: 'Team Logo', teamColor: 'Primary Color', pickColor: 'Pick Color', saveChanges: 'Save Changes', resetDefaults: 'Reset Defaults',
+                    headCoach: 'Head Coach', goalkeeperCoach: 'GK Coach', fitnessCoach: 'Fitness Coach', assistantCoach: 'Assistant', scout: 'Scout',
+                    yearsOld: 'yo', continue: 'Continue', week: 'Week', level: 'Lvl', GK: 'Goalkeeper', DEF: 'Defender', MID: 'Midfielder', FWD: 'Forward'
+                }
+            };
 
-                const simulateMinute = () => {
-                    match.value.minute++;
-                    
-                    // تولید موقعیت تصادفی بر اساس قدرت تیم‌ها
-                    const rand = Math.random();
-                    const homeAdvantage = 0.05;
-                    const strengthDiff = (match.value.homeTeam.avgRating - match.value.awayTeam.avgRating) / 100;
-                    
-                    let eventText = '';
-                    let eventType = 'info';
+            // --- Methods ---
 
-                    // شبیه‌سازی حرکت توپ
-                    const ballX = 50 + (Math.random() * 40 - 20);
-                    const ballY = 50 + (Math.random() * 30 - 15);
-                    match.value.ballHistory.push({ id: Date.now(), x: ballX, y: ballY });
-                    if(match.value.ballHistory.length > 5) match.value.ballHistory.shift();
+            const t = (key) => translations[lang.value][key] || key;
 
-                    if (rand < 0.15 + strengthDiff + homeAdvantage) {
-                        // حمله تیم خانگی
-                        if (Math.random() < 0.3) {
-                            // گل
-                            match.value.score.home++;
-                            eventText = `گل! ${match.value.homeTeam.name} پیش افتاد!`;
-                            eventType = 'goal';
-                            triggerGoalEffect();
-                        } else {
-                            eventText = `حمله خطرناک ${match.value.homeTeam.name} - مهار توسط دروازه‌بان`;
-                        }
-                    } else if (rand > 0.85 - strengthDiff) {
-                        // حمله تیم مهمان
-                        if (Math.random() < 0.3) {
-                            // گل
-                            match.value.score.away++;
-                            eventText = `گل! ${match.value.awayTeam.name} گل زد!`;
-                            eventType = 'goal';
-                            triggerGoalEffect();
-                        } else {
-                            eventText = `شوت محکم ${match.value.awayTeam.name} - به تیرک خورد`;
-                        }
-                    }
+            const toggleLang = () => {
+                lang.value = lang.value === 'fa' ? 'en' : 'fa';
+                document.documentElement.lang = lang.value;
+                document.documentElement.dir = lang.value === 'fa' ? 'rtl' : 'ltr';
+            };
 
-                    if (eventText) {
-                        match.value.logs.unshift({ minute: match.value.minute, text: eventText, type: eventType });
-                    }
+            const formatMoney = (amount) => {
+                return new Intl.NumberFormat(lang.value === 'fa' ? 'fa-IR' : 'en-US', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(amount);
+            };
 
-                    if (match.value.minute >= 90) {
-                        endMatch();
-                    }
-                };
-
-                const triggerGoalEffect = () => {
-                    goalFlash.value = true;
-                    setTimeout(() => {
-                        goalFlash.value = false;
-                    }, 500);
-                };
-
-                const endMatch = () => {
-                    clearInterval(match.value.timer);
-                    match.value.isLive = false;
-                    match.value.isFinished = true;
-                    match.value.logs.unshift({ minute: 90, text: 'سوت پایان بازی!', type: 'info' });
-                };
-
-                const resetMatch = () => {
-                    clearInterval(match.value.timer);
-                    match.value.isLive = false;
-                    match.value.isFinished = false;
-                    match.value.score = { home: 0, away: 0 };
-                    match.value.minute = 0;
-                    match.value.logs = [];
-                    match.value.ballHistory = [];
-                };
-
+            const generatePlayer = (id) => {
+                const isFa = Math.random() > 0.5;
+                const fNames = isFa ? firstNames.fa : firstNames.en;
+                const lNames = isFa ? lastNames.fa : lastNames.en;
+                const pos = positions[Math.floor(Math.random() * positions.length)];
+                const ovr = Math.floor(Math.random() * (90 - 60) + 60);
+                
                 return {
-                    currentView,
-                    stats,
-                    playersData,
-                    filteredPlayers,
-                    searchQuery,
-                    match,
-                    goalFlash,
-                    startMatch,
-                    resetMatch
+                    id: id || Date.now() + Math.random(),
+                    name: `${fNames[Math.floor(Math.random() * fNames.length)]} ${lNames[Math.floor(Math.random() * lNames.length)]}`,
+                    age: Math.floor(Math.random() * (35 - 17) + 17),
+                    position: pos,
+                    ovr: ovr,
+                    price: Math.floor(ovr * 100000 * (Math.random() * 0.5 + 0.8)),
+                    nationality: isFa ? 'Iran' : 'Spain',
+                    faceSeed: Math.random() // Seed for procedural face
                 };
-            }
-        }).mount('#app');
-    </script>
+            };
+
+            // Procedural Face Generation
+            const drawFace = (el, seed, size = 40) => {
+                if (!el) return;
+                const canvas = el;
+                const ctx = canvas.getContext('2d');
+                const rng = (min, max) => {
+                    const x = Math.sin(seed * 9999) * 10000;
+                    return min + (x - Math.floor(x)) * (max - min);
+                };
+                
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Skin Tone
+                const skinTone = `rgb(${Math.floor(rng(200, 255))}, ${Math.floor(rng(160, 210))}, ${Math.floor(rng(130, 180))})`;
+                
+                // Face Shape
+                ctx.fillStyle = skinTone;
+                ctx.beginPath();
+                ctx.arc(size/2, size/2, size/2 - 2, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Eyes
+                ctx.fillStyle = '#fff';
+                ctx.beginPath();
+                ctx.ellipse(size*0.35, size*0.45, size*0.1, size*0.06, 0, 0, Math.PI*2);
+                ctx.ellipse(size*0.65, size*0.45, size*0.1, size*0.06, 0, 0, Math.PI*2);
+                ctx.fill();
+                
+                ctx.fillStyle = '#333'; // Pupil
+                ctx.beginPath();
+                ctx.arc(size*0.35 + rng(-0.02, 0.02)*size, size*0.45, size*0.04, 0, Math.PI*2);
+                ctx.arc(size*0.65 + rng(-0.02, 0.02)*size, size*0.45, size*0.04, 0, Math.PI*2);
+                ctx.fill();
+
+                // Nose
+                ctx.strokeStyle = 'rgba(0,0,0,0.2)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(size/2, size*0.5);
+                ctx.lineTo(size/2 + rng(-0.05, 0.05)*size, size*0.65);
+                ctx.stroke();
+
+                // Mouth
+                ctx.strokeStyle = 'rgba(100,50,50,0.6)';
+                ctx.beginPath();
+                ctx.arc(size/2, size*0.75, size*0.1, 0.1 * Math.PI, 0.9 * Math.PI);
+                ctx.stroke();
+
+                // Hair (Simple)
+                if (rng(0, 1) > 0.2) {
+                    ctx.fillStyle = `rgb(${Math.floor(rng(20, 60))}, ${Math.floor(rng(10, 40))}, ${Math.floor(rng(10, 30))})`;
+                    ctx.beginPath();
+                    ctx.arc(size/2, size*0.3, size*0.45, Math.PI, 0);
+                    ctx.fill();
+                }
+            };
+
+            const initGame = () => {
+                // Generate initial squad
+                for(let i=0; i<15; i++) myPlayers.value.push(generatePlayer(i));
+                // Generate market
+                for(let i=0; i<20; i++) marketPlayers.value.push(generatePlayer(100+i));
+                
+                // Load settings
+                const saved = localStorage.getItem('fm_settings');
+                if(saved) teamConfig.value = JSON.parse(saved);
+            };
+
+            const calculateTeamStrength = () => {
+                if(Object.keys(lineup.value).length === 0) return 0;
+                const total = Object.values(lineup.value).reduce((sum, p) => sum + p.ovr, 0);
+                return Math.floor(total / Object.keys(lineup.value).length);
+            };
+
+            const calculateMarketValue = () => {
+                return myPlayers.value.reduce((sum, p) => sum + p.price, 0);
+            };
+
+            const getOvrColor = (ovr) => {
+                if(ovr >= 85) return 'text-green-400';
+                if(ovr >= 75) return 'text-yellow-400';
+                return 'text-red-400';
+            };
+
+            const getPosStyle = (posObj) => {
+                return `top: ${posObj.top}; left: ${posObj.left};`;
+            };
+
+            // Drag & Drop Logic
+            let draggedPlayer = null;
+            const dragPlayer = (evt, player) => {
+                draggedPlayer = player;
+                evt.dataTransfer.effectAllowed = 'move';
+            };
+
+            const hoverZone = (index) => {
+                // Visual feedback handled by CSS class if needed
+            };
+            
+            const leaveZone = (index) => {
+                // Clear visual feedback
+            };
+
+            const dropPlayer = (evt, posObj) => {
+                if(draggedPlayer) {
+                    // Check if position occupied, if so swap or remove? Simple replace for now
+                    lineup.value[posObj.id] = draggedPlayer;
+                    // Optional: Remove from list visually? No, keep list as pool
+                }
+                draggedPlayer = null;
+            };
+
+            const removeFromLineup = (posId) => {
+                delete lineup.value[posId];
+            };
+
+            const clearLineup = () => {
+                lineup.value = {};
+            };
+
+            // Market Logic
+            const filteredMarketPlayers = computed(() => {
+                return marketPlayers.value.filter(p => {
+                    const matchesName = p.name.includes(marketFilter.value);
+                    const matchesPos = marketPosFilter.value ? p.position === marketPosFilter.value : true;
+                    return matchesName && matchesPos;
+                });
+            });
+
+            const buyPlayer = (player) => {
+                if(budget.value >= player.price) {
+                    budget.value -= player.price;
+                    myPlayers.value.push(player);
+                    marketPlayers.value = marketPlayers.value.filter(p => p.id !== player.id);
+                    // Generate new market item
+                    marketPlayers.value.push(generatePlayer());
+                }
+            };
+
+            // Staff Logic
+            const hireStaff = (candidate) => {
+                // Simple logic: just add, maybe deduct money later
+                coachingStaff.value.push({...candidate, id: Date.now()});
+                availableStaff.value = availableStaff.value.filter(s => s.id !== candidate.id);
+            };
+
+            const fireStaff = (id) => {
+                coachingStaff.value = coachingStaff.value.filter(s => s.id !== id);
+                // Return to pool?
+            };
+
+            // Settings
+            const saveSettings = () => {
+                localStorage.setItem('fm_settings', JSON.stringify(teamConfig.value));
+                alert(lang.value === 'fa' ? 'تنظیمات ذخیره شد!' : 'Settings Saved!');
+            };
+
+            const resetSettings = () => {
+                teamConfig.value = { name: 'My FC', logo: '🛡️', color: '#3b82f6' };
+            };
+
+            // Match Simulation
+            const startMatchSimulation = () => {
+                isMatchRunning.value = true;
+                matchFinished.value = false;
+                homeScore.value = 0;
+                awayScore.value = 0;
+                matchTime.value = 0;
+                matchLogs.value = [{ time: 0, text: lang.value === 'fa' ? 'سوت آغاز بازی!' : 'Kick Off!', type: 'info' }];
+                
+                const interval = setInterval(() => {
+                    matchTime.value += 2; // Fast forward
+                    
+                    // Random Events
+                    const rand = Math.random();
+                    const teamStr = calculateTeamStrength();
+                    const oppStr = 82; // Fixed opponent strength for demo
+                    
+                    if(rand < 0.05) {
+                        // Goal Home
+                        homeScore.value++;
+                        const scorer = Object.values(lineup.value)[Math.floor(Math.random() * Object.keys(lineup.value).length)];
+                        matchLogs.value.push({ time: matchTime.value, text: `GOAL! ${scorer ? scorer.name : 'Unknown'} scores!`, type: 'goal' });
+                    } else if (rand > 0.95) {
+                        // Goal Away
+                        awayScore.value++;
+                        matchLogs.value.push({ time: matchTime.value, text: `GOAL! Opponent scores.`, type: 'goal' });
+                    } else if (rand > 0.8 && rand < 0.82) {
+                         matchLogs.value.push({ time: matchTime.value, text: lang.value === 'fa' ? 'شوت به تیرک!' : 'Hit the woodwork!', type: 'info' });
+                    }
+
+                    if(matchTime.value >= 90) {
+                        clearInterval(interval);
+                        matchFinished.value = true;
+                        matchLogs.value.push({ time: 90, text: lang.value === 'fa' ? 'پایان بازی!' : 'Full Time!', type: 'info' });
+                        currentWeek.value++;
+                    }
+                }, 100); // Speed of sim
+            };
+
+            const closeMatch = () => {
+                isMatchRunning.value = false;
+            };
+
+            onMounted(() => {
+                initGame();
+                // Initial draw faces fix
+                nextTick(() => {
+                   // Force redraw if needed
+                });
+            });
+
+            return {
+                lang, currentTab, currentWeek, budget, teamConfig, coachingStaff, availableStaff,
+                myPlayers, marketPlayers, lineup, formationPositions, isMatchRunning, matchFinished,
+                homeScore, awayScore, matchTime, matchLogs, marketFilter, marketPosFilter, filteredMarketPlayers,
+                t, toggleLang, formatMoney, drawFace, calculateTeamStrength, calculateMarketValue,
+                getOvrColor, getPosStyle, dragPlayer, hoverZone, leaveZone, dropPlayer, removeFromLineup, clearLineup,
+                buyPlayer, hireStaff, fireStaff, saveSettings, resetSettings, startMatchSimulation, closeMatch
+            };
+        }
+    }).mount('#app');
+</script>
 </body>
 </html>
