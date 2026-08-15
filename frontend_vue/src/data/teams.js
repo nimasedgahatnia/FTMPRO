@@ -1,0 +1,155 @@
+export const teams = [
+  {
+    id: 1,
+    name: 'رئال مادرید',
+    nameEn: 'Real Madrid',
+    logo: '⚪',
+    color: '#FFFFFF',
+    secondaryColor: '#FEBE10',
+    attack: 92,
+    defense: 88,
+    midfield: 90,
+    overall: 90,
+    players: [
+      { id: 1, name: 'تیبو کورتوا', position: 'GK', rating: 89, age: 31, nationality: 'بلژیک', face: '🧤' },
+      { id: 2, name: 'دنی کارواخال', position: 'RB', rating: 85, age: 32, nationality: 'اسپانیا', face: '👨' },
+      { id: 3, name: 'آنتونیو رودیگر', position: 'CB', rating: 87, age: 30, nationality: 'آلمان', face: '👨' },
+      { id: 4, name: 'دیوید آلابا', position: 'CB', rating: 86, age: 31, nationality: 'اتریش', face: '👨' },
+      { id: 5, name: 'فرلان مندی', position: 'LB', rating: 84, age: 28, nationality: 'فرانسه', face: '👨' },
+      { id: 6, name: 'جود بلینگام', position: 'CM', rating: 90, age: 20, nationality: 'انگلستان', face: '👦' },
+      { id: 7, name: 'لوکا مودریچ', position: 'CM', rating: 88, age: 38, nationality: 'کرواسی', face: '👴' },
+      { id: 8, name: 'فدریکو والورده', position: 'CM', rating: 88, age: 25, nationality: 'اروگوئه', face: '👨' },
+      { id: 9, name: 'وینیسیوس جونیور', position: 'LW', rating: 91, age: 23, nationality: 'برزیل', face: '👦' },
+      { id: 10, name: 'رودریگو', position: 'RW', rating: 86, age: 23, nationality: 'برزیل', face: '👦' },
+      { id: 11, name: 'کریم بنزما', position: 'ST', rating: 89, age: 36, nationality: 'فرانسه', face: '👨' }
+    ]
+  },
+  {
+    id: 2,
+    name: 'بارسلونا',
+    nameEn: 'Barcelona',
+    logo: '🔵',
+    color: '#A50044',
+    secondaryColor: '#004D98',
+    attack: 89,
+    defense: 86,
+    midfield: 91,
+    overall: 89,
+    players: [
+      { id: 1, name: 'مارک آندره تر اشتگن', position: 'GK', rating: 88, age: 31, nationality: 'آلمان', face: '🧤' },
+      { id: 2, name: 'ژول کونده', position: 'RB', rating: 85, age: 25, nationality: 'فرانسه', face: '👨' },
+      { id: 3, name: 'رونالد آرائوخو', position: 'CB', rating: 86, age: 25, nationality: 'اروگوئه', face: '👨' },
+      { id: 4, name: 'اینیگو مارتینز', position: 'CB', rating: 84, age: 32, nationality: 'اسپانیا', face: '👨' },
+      { id: 5, name: 'آلبرتو بالده', position: 'LB', rating: 83, age: 20, nationality: 'اسپانیا', face: '👦' },
+      { id: 6, name: 'فrenکی دی یونگ', position: 'CM', rating: 87, age: 26, nationality: 'هلند', face: '👨' },
+      { id: 7, name: 'پدری', position: 'CM', rating: 87, age: 21, nationality: 'اسپانیا', face: '👦' },
+      { id: 8, name: 'گاوی', position: 'CM', rating: 84, age: 19, nationality: 'اسپانیا', face: '👦' },
+      { id: 9, name: 'رافینیا', position: 'LW', rating: 85, age: 30, nationality: 'برزیل', face: '👨' },
+      { id: 10, name: 'لامین یامال', position: 'RW', rating: 84, age: 16, nationality: 'اسپانیا', face: '👦' },
+      { id: 11, name: 'رابرت لواندوفسکی', position: 'ST', rating: 89, age: 35, nationality: 'لهستان', face: '👨' }
+    ]
+  },
+  {
+    id: 3,
+    name: 'منچستر سیتی',
+    nameEn: 'Man City',
+    logo: '🔵',
+    color: '#6CABDD',
+    secondaryColor: '#1C2C5B',
+    attack: 93,
+    defense: 89,
+    midfield: 94,
+    overall: 92,
+    players: [
+      { id: 1, name: 'ادرسون', position: 'GK', rating: 88, age: 30, nationality: 'برزیل', face: '🧤' },
+      { id: 2, name: 'کایل واکر', position: 'RB', rating: 84, age: 33, nationality: 'انگلستان', face: '👨' },
+      { id: 3, name: 'روبن دیاز', position: 'CB', rating: 88, age: 30, nationality: 'پرتغال', face: '👨' },
+      { id: 4, name: 'جان استونز', position: 'CB', rating: 85, age: 29, nationality: 'انگلستان', face: '👨' },
+      { id: 5, name: 'خوزه گواردیولا', position: 'LB', rating: 83, age: 27, nationality: 'اسپانیا', face: '👨' },
+      { id: 6, name: 'رودری', position: 'CDM', rating: 91, age: 27, nationality: 'اسپانیا', face: '👨' },
+      { id: 7, name: 'کوین دی بروینه', position: 'CM', rating: 91, age: 32, nationality: 'بلژیک', face: '👨' },
+      { id: 8, name: 'برناردو سیلوا', position: 'CM', rating: 88, age: 29, nationality: 'پرتغال', face: '👨' },
+      { id: 9, name: 'فیل فودن', position: 'LW', rating: 88, age: 23, nationality: 'انگلستان', face: '👦' },
+      { id: 10, name: 'جرمی دوکو', position: 'RW', rating: 84, age: 22, nationality: 'بلژیک', face: '👦' },
+      { id: 11, name: 'ارلینگ هالند', position: 'ST', rating: 93, age: 23, nationality: 'نروژ', face: '👦' }
+    ]
+  },
+  {
+    id: 4,
+    name: 'لیورپول',
+    nameEn: 'Liverpool',
+    logo: '🔴',
+    color: '#C8102E',
+    secondaryColor: '#00B2A9',
+    attack: 90,
+    defense: 87,
+    midfield: 88,
+    overall: 89,
+    players: [
+      { id: 1, name: 'آلیسون بکر', position: 'GK', rating: 88, age: 31, nationality: 'برزیل', face: '🧤' },
+      { id: 2, name: 'ترنت الکساندر-آرنولد', position: 'RB', rating: 87, age: 25, nationality: 'انگلستان', face: '👦' },
+      { id: 3, name: 'ویرجیل فن دایک', position: 'CB', rating: 89, age: 32, nationality: 'هلند', face: '👨' },
+      { id: 4, name: 'ایبراہیما کوناته', position: 'CB', rating: 85, age: 24, nationality: 'فرانسه', face: '👦' },
+      { id: 5, name: 'اندرو رابرتسون', position: 'LB', rating: 85, age: 30, nationality: 'اسکاتلند', face: '👨' },
+      { id: 6, name: 'الکسیس مک آلیستر', position: 'CDM', rating: 85, age: 25, nationality: 'آرژانتین', face: '👦' },
+      { id: 7, name: 'دومینیک سوبوسلایی', position: 'CM', rating: 84, age: 23, nationality: 'مجارستان', face: '👦' },
+      { id: 8, name: 'کورتیس جونز', position: 'CM', rating: 82, age: 23, nationality: 'انگلستان', face: '👦' },
+      { id: 9, name: 'لوییز دیاز', position: 'LW', rating: 86, age: 27, nationality: 'کلمبیا', face: '👨' },
+      { id: 10, name: 'محمد صلاح', position: 'RW', rating: 90, age: 31, nationality: 'مصر', face: '👨' },
+      { id: 11, name: 'داروین نونیز', position: 'ST', rating: 85, age: 24, nationality: 'اروگوئه', face: '👦' }
+    ]
+  },
+  {
+    id: 5,
+    name: 'بایرن مونیخ',
+    nameEn: 'Bayern Munich',
+    logo: '🔴',
+    color: '#DC052D',
+    secondaryColor: '#0066B2',
+    attack: 91,
+    defense: 87,
+    midfield: 89,
+    overall: 89,
+    players: [
+      { id: 1, name: 'مانوئل نویر', position: 'GK', rating: 87, age: 37, nationality: 'آلمان', face: '👴' },
+      { id: 2, name: 'یوزیف استانیسیچ', position: 'RB', rating: 82, age: 24, nationality: 'کرواسی', face: '👦' },
+      { id: 3, name: 'دایوت اوپامکانو', position: 'CB', rating: 85, age: 25, nationality: 'فرانسه', face: '👦' },
+      { id: 4, name: 'کیم مین-جه', position: 'CB', rating: 86, age: 27, nationality: 'کره جنوبی', face: '👨' },
+      { id: 5, name: 'آلفونسو دیویس', position: 'LB', rating: 85, age: 23, nationality: 'کانادا', face: '👦' },
+      { id: 6, name: 'Joshua Kimmich', position: 'CDM', rating: 89, age: 29, nationality: 'آلمان', face: '👨' },
+      { id: 7, name: 'لئون گورتزکا', position: 'CM', rating: 85, age: 29, nationality: 'آلمان', face: '👨' },
+      { id: 8, name: 'Jamal Musiala', position: 'CAM', rating: 87, age: 21, nationality: 'آلمان', face: '👦' },
+      { id: 9, name: 'لروی سانه', position: 'LW', rating: 86, age: 28, nationality: 'آلمان', face: '👨' },
+      { id: 10, name: 'سرژ گنابری', position: 'RW', rating: 85, age: 28, nationality: 'آلمان', face: '👨' },
+      { id: 11, name: 'هری کین', position: 'ST', rating: 91, age: 30, nationality: 'انگلستان', face: '👨' }
+    ]
+  },
+  {
+    id: 6,
+    name: 'پاری سن ژرمن',
+    nameEn: 'PSG',
+    logo: '🔵',
+    color: '#004170',
+    secondaryColor: '#DA291C',
+    attack: 88,
+    defense: 84,
+    midfield: 86,
+    overall: 86,
+    players: [
+      { id: 1, name: 'جانلوییجي دوناروما', position: 'GK', rating: 86, age: 25, nationality: 'ایتالیا', face: '👦' },
+      { id: 2, name: 'Achraf Hakimi', position: 'RB', rating: 86, age: 25, nationality: 'مراکش', face: '👦' },
+      { id: 3, name: 'Marquinhos', position: 'CB', rating: 86, age: 30, nationality: 'برزیل', face: '👨' },
+      { id: 4, name: 'Milan Škriniar', position: 'CB', rating: 85, age: 29, nationality: 'اسلواکی', face: '👨' },
+      { id: 5, name: 'Lucas Hernández', position: 'LB', rating: 84, age: 28, nationality: 'فرانسه', face: '👨' },
+      { id: 6, name: 'Warren Zaïre-Emery', position: 'CDM', rating: 82, age: 18, nationality: 'فرانسه', face: '👦' },
+      { id: 7, name: 'Vitinha', position: 'CM', rating: 84, age: 24, nationality: 'پرتغال', face: '👦' },
+      { id: 8, name: 'Fabián Ruiz', position: 'CM', rating: 84, age: 28, nationality: 'اسپانیا', face: '👨' },
+      { id: 9, name: 'Bradley Barcola', position: 'LW', rating: 82, age: 21, nationality: 'فرانسه', face: '👦' },
+      { id: 10, name: 'Ousmane Dembélé', position: 'RW', rating: 85, age: 27, nationality: 'فرانسه', face: '👨' },
+      { id: 11, name: 'Gonçalo Ramos', position: 'ST', rating: 84, age: 22, nationality: 'پرتغال', face: '👦' }
+    ]
+  }
+];
+
+export const getTeamById = (id) => teams.find(t => t.id === id);
+export const getAllTeams = () => teams;
