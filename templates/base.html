@@ -4,44 +4,115 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}مدیریت فوتبال{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <nav class="navbar">
+    <div class="animated-bg"></div>
+    
+    <nav class="navbar glass-effect">
         <div class="container">
-            <a href="{{ url_for('index') }}" class="brand">⚽ مدیریت فوتبال</a>
+            <a href="{{ url_for('index') }}" class="brand">
+                <i class="fas fa-futbol"></i>
+                <span>مدیریت فوتبال</span>
+            </a>
             {% if current_user.is_authenticated %}
             <div class="nav-links">
-                <a href="{{ url_for('dashboard') }}">داشبورد</a>
-                <a href="{{ url_for('players') }}">بازیکنان</a>
-                <a href="{{ url_for('transfers') }}">انتقالات</a>
-                <a href="{{ url_for('matches') }}">مسابقات</a>
-                <a href="{{ url_for('league_table') }}">جدول لیگ</a>
-                <a href="{{ url_for('logout') }}">خروج</a>
+                <a href="{{ url_for('dashboard') }}"><i class="fas fa-tachometer-alt"></i> داشبورد</a>
+                <a href="{{ url_for('players') }}"><i class="fas fa-users"></i> بازیکنان</a>
+                <a href="{{ url_for('transfers') }}"><i class="fas fa-exchange-alt"></i> انتقالات</a>
+                <a href="{{ url_for('matches') }}"><i class="fas fa-gamepad"></i> مسابقات</a>
+                <a href="{{ url_for('league_table') }}"><i class="fas fa-table"></i> جدول لیگ</a>
+                <a href="{{ url_for('logout') }}" class="btn-logout"><i class="fas fa-sign-out-alt"></i> خروج</a>
             </div>
             {% else %}
             <div class="nav-links">
-                <a href="{{ url_for('login') }}">ورود</a>
-                <a href="{{ url_for('register') }}">ثبت نام</a>
+                <a href="{{ url_for('login') }}" class="btn-nav-login"><i class="fas fa-sign-in-alt"></i> ورود</a>
+                <a href="{{ url_for('register') }}" class="btn-nav-register"><i class="fas fa-user-plus"></i> ثبت نام</a>
             </div>
             {% endif %}
+            <div class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </div>
         </div>
     </nav>
 
-    <main class="container">
+    <main class="main-content">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}">{{ message }}</div>
-                {% endfor %}
+                <div class="messages-container">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} animate-slide-down">
+                            <i class="fas fa-{% if category == 'success' %}check-circle{% elif category == 'error' %}exclamation-circle{% else %}info-circle{% endif %}"></i>
+                            <span>{{ message }}</span>
+                            <button class="close-alert"><i class="fas fa-times"></i></button>
+                        </div>
+                    {% endfor %}
+                </div>
             {% endif %}
         {% endwith %}
         
         {% block content %}{% endblock %}
     </main>
 
-    <footer>
-        <p>&copy; 2024 بازی مدیریت فوتبال - الهام گرفته از Hattrick</p>
+    <footer class="glass-effect">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3><i class="fas fa-futbol"></i> مدیریت فوتبال</h3>
+                    <p>بهترین بازی مدیریت فوتبال به سبک Hattrick</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-telegram"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-discord"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>دسترسی سریع</h4>
+                    <ul>
+                        <li><a href="{{ url_for('index') }}">صفحه اصلی</a></li>
+                        <li><a href="{{ url_for('register') }}">ثبت نام</a></li>
+                        <li><a href="{{ url_for('login') }}">ورود</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>امکانات</h4>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-check"></i> مدیریت تیم</a></li>
+                        <li><a href="#"><i class="fas fa-check"></i> بازار انتقال</a></li>
+                        <li><a href="#"><i class="fas fa-check"></i> مسابقات لیگ</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 بازی مدیریت فوتبال - طراحی شده با ❤️</p>
+            </div>
+        </div>
     </footer>
+
+    <script>
+        // Mobile menu toggle
+        document.querySelector('.mobile-menu-btn')?.addEventListener('click', function() {
+            document.querySelector('.nav-links').classList.toggle('active');
+        });
+
+        // Close alerts
+        document.querySelectorAll('.close-alert').forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.parentElement.style.animation = 'slideOut 0.3s ease forwards';
+                setTimeout(() => this.parentElement.remove(), 300);
+            });
+        });
+
+        // Auto hide alerts after 5 seconds
+        document.querySelectorAll('.alert').forEach(alert => {
+            setTimeout(() => {
+                alert.style.animation = 'slideOut 0.3s ease forwards';
+                setTimeout(() => alert.remove(), 300);
+            }, 5000);
+        });
+    </script>
 </body>
 </html>

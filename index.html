@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>فوتبال مستر - شبیه‌ساز حرفه‌ای فیفا</title>
+    
+    <!-- فونت وزیرمتن -->
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Vue 3 -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    
+    <!-- آیکون‌ها -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background-color: #0f172a;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        /* اسکرول بار سفارشی */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3b82f6; 
+            border-radius: 4px;
+        }
+
+        /* افکت‌های شیشه‌ای و نئونی */
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .neon-text {
+            text-shadow: 0 0 10px rgba(59, 130, 246, 0.8), 0 0 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.5);
+            border-color: #3b82f6;
+        }
+
+        /* انیمیشن‌ها */
+        .fade-enter-active, .fade-leave-active {
+            transition: opacity 0.5s ease;
+        }
+        .fade-enter-from, .fade-leave-to {
+            opacity: 0;
+        }
+
+        .slide-up-enter-active, .slide-up-leave-active {
+            transition: all 0.5s ease;
+        }
+        .slide-up-enter-from, .slide-up-leave-to {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        /* پس‌زمینه متحرک */
+        .animated-bg {
+            background: linear-gradient(-45deg, #0f172a, #1e3a8a, #0f172a, #172554);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* استایل کارت بازیکن فیفا */
+        .fifa-card {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border: 2px solid #334155;
+            clip-path: polygon(10% 0, 100% 0, 100% 90%, 90% 100%, 0 100%, 0 10%);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .fifa-card.gold {
+            border-color: #fbbf24;
+            box-shadow: 0 0 15px rgba(251, 191, 36, 0.3);
+        }
+        
+        .fifa-card.silver {
+            border-color: #94a3b8;
+        }
+
+        .stat-bar {
+            transition: width 1s ease-in-out;
+        }
+        
+        /* افکت گل */
+        .goal-flash {
+            animation: flash 0.5s ease-in-out;
+        }
+        
+        @keyframes flash {
+            0%, 100% { background-color: transparent; }
+            50% { background-color: rgba(34, 197, 94, 0.3); }
+        }
+    </style>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                        secondary: '#8b5cf6',
+                        dark: '#0f172a',
+                        card: '#1e293b'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="animated-bg min-h-screen flex flex-col">
+
+    <div id="app" class="flex-grow flex flex-col">
+        
+        <!-- نوبار شیشه‌ای -->
+        <nav class="glass-panel sticky top-0 z-50 px-6 py-4 flex justify-between items-center border-b border-gray-700">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-futbol text-3xl text-blue-500 animate-pulse"></i>
+                <h1 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500 neon-text">
+                    فوتبال مستر
+                </h1>
+            </div>
+            <div class="hidden md:flex gap-6 text-gray-300">
+                <a href="#" @click.prevent="currentView = 'home'" :class="{'text-blue-400': currentView === 'home'}" class="hover:text-white transition">خانه</a>
+                <a href="#" @click.prevent="currentView = 'teams'" :class="{'text-blue-400': currentView === 'teams'}" class="hover:text-white transition">تیم‌ها</a>
+                <a href="#" @click.prevent="currentView = 'simulate'" :class="{'text-blue-400': currentView === 'simulate'}" class="hover:text-white transition">شبیه‌سازی</a>
+            </div>
+            <button class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white px-6 py-2 rounded-full font-bold shadow-lg transform hover:scale-105 transition duration-300">
+                ورود / ثبت‌نام
+            </button>
+        </nav>
+
+        <!-- محتوای اصلی -->
+        <main class="container mx-auto px-4 py-8 flex-grow">
+            
+            <transition name="fade" mode="out-in">
+                
+                <!-- صفحه خانه -->
+                <div v-if="currentView === 'home'" key="home" class="space-y-12">
+                    <!-- هیرو سکشن -->
+                    <div class="text-center py-16 relative">
+                        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-500 rounded-full filter blur-[120px] opacity-20 -z-10"></div>
+                        <h2 class="text-5xl md:text-7xl font-black mb-6 leading-tight">
+                            دنیای فوتبال را <br>
+                            <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400">واقع‌گرایانه تجربه کنید</span>
+                        </h2>
+                        <p class="text-xl text-gray-300 mb-10 max-w-2xl mx-auto">
+                            با پیشرفته‌ترین موتور شبیه‌سازی، تیم رویایی خود را بسازید و در لیگ‌های جهانی رقابت کنید.
+                        </p>
+                        <div class="flex justify-center gap-4">
+                            <button @click="currentView = 'simulate'" class="bg-blue-600 hover:bg-blue-500 text-white text-lg px-8 py-4 rounded-xl font-bold shadow-[0_0_20px_rgba(37,99,235,0.5)] hover:shadow-[0_0_30px_rgba(37,99,235,0.7)] transition-all transform hover:-translate-y-1">
+                                <i class="fa-solid fa-play ml-2"></i> شروع مسابقه
+                            </button>
+                            <button @click="currentView = 'teams'" class="glass-panel hover:bg-white/10 text-white text-lg px-8 py-4 rounded-xl font-bold border border-gray-600 transition-all transform hover:-translate-y-1">
+                                مشاهده تیم‌ها
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- آمار سریع -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div v-for="stat in stats" :key="stat.label" class="glass-panel p-6 rounded-2xl text-center card-hover border-t-4 border-blue-500">
+                            <div class="text-4xl font-bold text-white mb-2">{{ stat.value }}</div>
+                            <div class="text-gray-400">{{ stat.label }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- صفحه تیم‌ها -->
+                <div v-else-if="currentView === 'teams'" key="teams" class="space-y-8">
+                    <div class="flex justify-between items-center mb-8">
+                        <h2 class="text-3xl font-bold border-r-4 border-blue-500 pr-4">لیست تیم‌ها و بازیکنان</h2>
+                        <div class="relative">
+                            <input v-model="searchQuery" type="text" placeholder="جستجوی بازیکن..." class="bg-slate-800 border border-slate-600 text-white rounded-full px-6 py-2 focus:outline-none focus:border-blue-500 w-64">
+                            <i class="fa-solid fa-search absolute left-4 top-3 text-gray-400"></i>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        <div v-for="player in filteredPlayers" :key="player.id" class="fifa-card p-4 relative group cursor-pointer" :class="player.rating >= 85 ? 'gold' : 'silver'">
+                            <!-- افکت هاور -->
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-lg"></div>
+                            
+                            <div class="relative z-10 flex flex-col items-center">
+                                <div class="w-24 h-24 rounded-full bg-slate-700 mb-4 border-4 border-current overflow-hidden relative">
+                                    <img :src="`https://api.dicebear.com/7.x/avataaars/svg?seed=${player.name}&backgroundColor=b6e3f4`" alt="Player" class="w-full h-full object-cover">
+                                </div>
+                                
+                                <div class="text-center w-full">
+                                    <div class="text-3xl font-black italic" :class="player.rating >= 85 ? 'text-yellow-400' : 'text-gray-300'">{{ player.rating }}</div>
+                                    <div class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-2">{{ player.position }}</div>
+                                    <h3 class="text-lg font-bold text-white truncate">{{ player.name }}</h3>
+                                    <p class="text-xs text-blue-400 font-semibold">{{ player.team }}</p>
+                                </div>
+
+                                <!-- آمار جزئی -->
+                                <div class="w-full mt-4 space-y-2 text-xs text-gray-300">
+                                    <div class="flex justify-between">
+                                        <span>PAC</span>
+                                        <div class="w-24 bg-slate-700 rounded-full h-2">
+                                            <div class="bg-green-500 h-2 rounded-full stat-bar" :style="{width: player.pace + '%'}"></div>
+                                        </div>
+                                        <span>{{ player.pace }}</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span>SHO</span>
+                                        <div class="w-24 bg-slate-700 rounded-full h-2">
+                                            <div class="bg-red-500 h-2 rounded-full stat-bar" :style="{width: player.shooting + '%'}"></div>
+                                        </div>
+                                        <span>{{ player.shooting }}</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span>PAS</span>
+                                        <div class="w-24 bg-slate-700 rounded-full h-2">
+                                            <div class="bg-blue-500 h-2 rounded-full stat-bar" :style="{width: player.passing + '%'}"></div>
+                                        </div>
+                                        <span>{{ player.passing }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- صفحه شبیه‌سازی -->
+                <div v-else-if="currentView === 'simulate'" key="simulate" class="max-w-5xl mx-auto">
+                    <div class="glass-panel rounded-3xl overflow-hidden border border-gray-700 shadow-2xl" :class="goalFlash ? 'goal-flash' : ''">
+                        
+                        <!-- هدر مسابقه -->
+                        <div class="bg-slate-900 p-6 flex justify-between items-center border-b border-gray-700">
+                            <div class="text-center w-1/3">
+                                <h3 class="text-2xl font-bold text-white">{{ match.homeTeam.name }}</h3>
+                                <div class="text-sm text-gray-400 mt-1">میانگین قدرت: {{ match.homeTeam.avgRating }}</div>
+                            </div>
+                            <div class="text-center w-1/3">
+                                <div class="text-5xl font-black text-yellow-400 font-mono tracking-widest">
+                                    {{ match.score.home }} - {{ match.score.away }}
+                                </div>
+                                <div class="text-sm text-gray-400 mt-2">دقیقه: {{ match.minute }}'</div>
+                            </div>
+                            <div class="text-center w-1/3">
+                                <h3 class="text-2xl font-bold text-white">{{ match.awayTeam.name }}</h3>
+                                <div class="text-sm text-gray-400 mt-1">میانگین قدرت: {{ match.awayTeam.avgRating }}</div>
+                            </div>
+                        </div>
+
+                        <!-- زمین بازی (نمایش گرافیکی ساده) -->
+                        <div class="relative h-64 bg-green-900 overflow-hidden border-b border-gray-700">
+                            <!-- خطوط زمین -->
+                            <div class="absolute inset-0 border-4 border-white/30 m-4 rounded-lg"></div>
+                            <div class="absolute top-0 bottom-0 left-1/2 w-1 bg-white/30 -translate-x-1/2"></div>
+                            <div class="absolute top-1/2 left-1/2 w-32 h-32 border-2 border-white/30 rounded-full -translate-x-1/2 -translate-y-1/2"></div>
+                            
+                            <!-- بازیکنان (نقاط متحرک) -->
+                            <div v-for="ball in match.ballHistory" :key="ball.id" class="absolute w-4 h-4 bg-yellow-400 rounded-full shadow-[0_0_10px_yellow] z-20 transition-all duration-1000 ease-linear"
+                                 :style="{ left: ball.x + '%', top: ball.y + '%' }"></div>
+                            
+                            <div v-if="match.isLive" class="absolute inset-0 flex items-center justify-center">
+                                <span class="bg-black/50 text-white px-4 py-2 rounded-full text-sm animate-pulse">در حال پخش زنده...</span>
+                            </div>
+                        </div>
+
+                        <!-- کنترل‌ها و گزارش -->
+                        <div class="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <!-- دکمه‌ها -->
+                            <div class="col-span-1 flex flex-col gap-4">
+                                <button @click="startMatch" :disabled="match.isLive || match.isFinished" 
+                                    class="w-full py-4 rounded-xl font-bold text-lg transition-all transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    :class="match.isFinished ? 'bg-gray-600' : 'bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-400 hover:to-emerald-500 text-white shadow-lg shadow-green-900/50'">
+                                    <i class="fa-solid fa-flag-checkered ml-2"></i>
+                                    {{ match.isFinished ? 'پایان بازی' : (match.isLive ? 'در حال برگزاری' : 'شروع مسابقه') }}
+                                </button>
+                                
+                                <button @click="resetMatch" class="w-full py-3 rounded-xl font-bold bg-slate-700 hover:bg-slate-600 text-white transition">
+                                    <i class="fa-solid fa-rotate-right ml-2"></i> ریست کردن
+                                </button>
+
+                                <div class="mt-4 p-4 bg-slate-800 rounded-xl border border-slate-700">
+                                    <h4 class="font-bold text-gray-300 mb-2">احتمال برد</h4>
+                                    <div class="flex h-4 rounded-full overflow-hidden">
+                                        <div class="bg-blue-500 transition-all duration-500" :style="{ width: match.winProbability.home + '%' }"></div>
+                                        <div class="bg-gray-600 transition-all duration-500" :style="{ width: match.winProbability.draw + '%' }"></div>
+                                        <div class="bg-red-500 transition-all duration-500" :style="{ width: match.winProbability.away + '%' }"></div>
+                                    </div>
+                                    <div class="flex justify-between text-xs text-gray-400 mt-1">
+                                        <span>{{ match.homeTeam.name }}</span>
+                                        <span>مساوی</span>
+                                        <span>{{ match.awayTeam.name }}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- گزارش زنده -->
+                            <div class="col-span-1 md:col-span-2 bg-slate-900 rounded-xl p-4 h-64 overflow-y-auto border border-gray-700 font-mono text-sm">
+                                <div v-for="(log, index) in match.logs" :key="index" class="mb-2 border-b border-gray-800 pb-2 last:border-0 animate-pulse">
+                                    <span class="text-yellow-500 font-bold ml-2">{{ log.minute }}'</span>
+                                    <span :class="log.type === 'goal' ? 'text-green-400 font-bold' : 'text-gray-300'">
+                                        {{ log.text }}
+                                    </span>
+                                </div>
+                                <div v-if="match.logs.length === 0" class="text-gray-500 text-center mt-10">
+                                    هنوز اتفاقی نیفتاده است...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </transition>
+        </main>
+
+        <!-- فوتر -->
+        <footer class="glass-panel border-t border-gray-700 mt-auto py-8">
+            <div class="container mx-auto px-4 text-center text-gray-400">
+                <p>&copy; 2024 فوتبال مستر. تمام حقوق محفوظ است.</p>
+                <div class="flex justify-center gap-4 mt-4">
+                    <a href="#" class="hover:text-blue-400 transition"><i class="fa-brands fa-instagram text-xl"></i></a>
+                    <a href="#" class="hover:text-blue-400 transition"><i class="fa-brands fa-twitter text-xl"></i></a>
+                    <a href="#" class="hover:text-blue-400 transition"><i class="fa-brands fa-discord text-xl"></i></a>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+    <script>
+        const { createApp, ref, computed, onMounted } = Vue;
+
+        createApp({
+            setup() {
+                const currentView = ref('home');
+                const searchQuery = ref('');
+                const goalFlash = ref(false);
+
+                // داده‌های نمونه بازیکنان واقعی (شبیه‌سازی شده)
+                const playersData = [
+                    { id: 1, name: 'لیونل مسی', team: 'اینتر میامی', position: 'RW', rating: 93, pace: 85, shooting: 92, passing: 91 },
+                    { id: 2, name: 'کریستیانو رونالدو', team: 'النصر', position: 'ST', rating: 91, pace: 82, shooting: 93, passing: 82 },
+                    { id: 3, name: 'کیلین امباپه', team: 'رئال مادرید', position: 'ST', rating: 94, pace: 97, shooting: 91, passing: 83 },
+                    { id: 4, name: 'ارلینگ هالند', team: 'منچستر سیتی', position: 'ST', rating: 93, pace: 89, shooting: 94, passing: 75 },
+                    { id: 5, name: 'کوین دی بروینه', team: 'منچستر سیتی', position: 'CM', rating: 92, pace: 76, shooting: 86, passing: 94 },
+                    { id: 6, name: 'وینیسیوس جونیور', team: 'رئال مادرید', position: 'LW', rating: 90, pace: 95, shooting: 84, passing: 83 },
+                    { id: 7, name: 'جود بلینگام', team: 'رئال مادرید', position: 'CAM', rating: 90, pace: 84, shooting: 85, passing: 88 },
+                    { id: 8, name: 'محمد صلاح', team: 'لیورپول', position: 'RW', rating: 89, pace: 90, shooting: 88, passing: 82 },
+                    { id: 9, name: 'هری کین', team: 'بایرن مونیخ', position: 'ST', rating: 90, pace: 75, shooting: 92, passing: 86 },
+                    { id: 10, name: 'رودری', team: 'منچستر سیتی', position: 'CDM', rating: 90, pace: 70, shooting: 78, passing: 89 },
+                    { id: 11, name: 'علیرضا بیرانوند', team: 'پرسپولیس', position: 'GK', rating: 78, pace: 60, shooting: 50, passing: 70 },
+                    { id: 12, name: 'مهدی طارمی', team: 'اینتر', position: 'ST', rating: 84, pace: 82, shooting: 83, passing: 78 },
+                ];
+
+                const stats = ref([
+                    { label: 'بازیکنان ثبت‌نام شده', value: '12,450' },
+                    { label: 'مسابقات شبیه‌سازی شده', value: '85,320' },
+                    { label: 'جوایز فصلی', value: '$50,000' }
+                ]);
+
+                const filteredPlayers = computed(() => {
+                    if (!searchQuery.value) return playersData;
+                    return playersData.filter(p => 
+                        p.name.includes(searchQuery.value) || 
+                        p.team.includes(searchQuery.value)
+                    );
+                });
+
+                // منطق شبیه‌سازی مسابقه
+                const match = ref({
+                    homeTeam: { name: 'رئال مادرید', avgRating: 91, players: [] },
+                    awayTeam: { name: 'منچستر سیتی', avgRating: 90, players: [] },
+                    score: { home: 0, away: 0 },
+                    minute: 0,
+                    isLive: false,
+                    isFinished: false,
+                    logs: [],
+                    ballHistory: [],
+                    winProbability: { home: 45, draw: 25, away: 30 },
+                    timer: null
+                });
+
+                const startMatch = () => {
+                    if (match.value.isLive || match.value.isFinished) return;
+                    
+                    match.value.isLive = true;
+                    match.value.isFinished = false;
+                    match.value.score = { home: 0, away: 0 };
+                    match.value.minute = 0;
+                    match.value.logs = [{ minute: 0, text: 'سوت آغاز بازی زده شد!', type: 'info' }];
+                    match.value.ballHistory = [];
+
+                    match.value.timer = setInterval(() => {
+                        simulateMinute();
+                    }, 100); // سرعت شبیه‌سازی (هر 100 میلی ثانیه 1 دقیقه بازی)
+                };
+
+                const simulateMinute = () => {
+                    match.value.minute++;
+                    
+                    // تولید موقعیت تصادفی بر اساس قدرت تیم‌ها
+                    const rand = Math.random();
+                    const homeAdvantage = 0.05;
+                    const strengthDiff = (match.value.homeTeam.avgRating - match.value.awayTeam.avgRating) / 100;
+                    
+                    let eventText = '';
+                    let eventType = 'info';
+
+                    // شبیه‌سازی حرکت توپ
+                    const ballX = 50 + (Math.random() * 40 - 20);
+                    const ballY = 50 + (Math.random() * 30 - 15);
+                    match.value.ballHistory.push({ id: Date.now(), x: ballX, y: ballY });
+                    if(match.value.ballHistory.length > 5) match.value.ballHistory.shift();
+
+                    if (rand < 0.15 + strengthDiff + homeAdvantage) {
+                        // حمله تیم خانگی
+                        if (Math.random() < 0.3) {
+                            // گل
+                            match.value.score.home++;
+                            eventText = `گل! ${match.value.homeTeam.name} پیش افتاد!`;
+                            eventType = 'goal';
+                            triggerGoalEffect();
+                        } else {
+                            eventText = `حمله خطرناک ${match.value.homeTeam.name} - مهار توسط دروازه‌بان`;
+                        }
+                    } else if (rand > 0.85 - strengthDiff) {
+                        // حمله تیم مهمان
+                        if (Math.random() < 0.3) {
+                            // گل
+                            match.value.score.away++;
+                            eventText = `گل! ${match.value.awayTeam.name} گل زد!`;
+                            eventType = 'goal';
+                            triggerGoalEffect();
+                        } else {
+                            eventText = `شوت محکم ${match.value.awayTeam.name} - به تیرک خورد`;
+                        }
+                    }
+
+                    if (eventText) {
+                        match.value.logs.unshift({ minute: match.value.minute, text: eventText, type: eventType });
+                    }
+
+                    if (match.value.minute >= 90) {
+                        endMatch();
+                    }
+                };
+
+                const triggerGoalEffect = () => {
+                    goalFlash.value = true;
+                    setTimeout(() => {
+                        goalFlash.value = false;
+                    }, 500);
+                };
+
+                const endMatch = () => {
+                    clearInterval(match.value.timer);
+                    match.value.isLive = false;
+                    match.value.isFinished = true;
+                    match.value.logs.unshift({ minute: 90, text: 'سوت پایان بازی!', type: 'info' });
+                };
+
+                const resetMatch = () => {
+                    clearInterval(match.value.timer);
+                    match.value.isLive = false;
+                    match.value.isFinished = false;
+                    match.value.score = { home: 0, away: 0 };
+                    match.value.minute = 0;
+                    match.value.logs = [];
+                    match.value.ballHistory = [];
+                };
+
+                return {
+                    currentView,
+                    stats,
+                    playersData,
+                    filteredPlayers,
+                    searchQuery,
+                    match,
+                    goalFlash,
+                    startMatch,
+                    resetMatch
+                };
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>

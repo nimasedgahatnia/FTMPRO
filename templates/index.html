@@ -2,26 +2,65 @@
 
 {% block content %}
 <div class="hero">
-    <h1>به بازی مدیریت فوتبال خوش آمدید</h1>
-    <p>تیم خود را بسازید، بازیکنان را خرید و فروش کنید و به قهرمانی برسید!</p>
+    <h1><i class="fas fa-trophy"></i> به بازی مدیریت فوتبال خوش آمدید</h1>
+    <p>تیم خود را بسازید، بازیکنان مستعد را کشف کنید، استراتژی‌های هوشمندانه بچینید و به قهرمانی لیگ برسید!</p>
     <div class="cta-buttons">
-        <a href="{{ url_for('register') }}" class="btn btn-primary">شروع کنید</a>
-        <a href="{{ url_for('login') }}" class="btn btn-secondary">ورود</a>
+        <a href="{{ url_for('register') }}" class="btn btn-primary"><i class="fas fa-rocket"></i> شروع کنید</a>
+        <a href="{{ url_for('login') }}" class="btn btn-secondary"><i class="fas fa-sign-in-alt"></i> ورود</a>
     </div>
 </div>
 
 <div class="features">
     <div class="feature-card">
-        <h3>⚽ مدیریت تیم</h3>
-        <p>تیم خود را با بازیکنان مستعد بسازید و استراتژی خود را پیاده کنید</p>
+        <i class="fas fa-users-cog"></i>
+        <h3>⚽ مدیریت حرفه‌ای تیم</h3>
+        <p>تیم خود را با بازیکنان مستعد بسازید، ترکیب بهینه را انتخاب کنید و استراتژی‌های تاکتیکی خود را پیاده‌سازی کنید</p>
     </div>
     <div class="feature-card">
-        <h3>💰 بازار انتقال</h3>
-        <p>بازیکنان جدید بخرید و بازیکنان خود را بفروشید</p>
+        <i class="fas fa-hand-holding-usd"></i>
+        <h3>💰 بازار انتقال پویا</h3>
+        <p>بازیکنان جدید و استعداده درخشان بخرید، بازیکنان خود را با بهترین قیمت بفروشید و بودجه تیم را مدیریت کنید</p>
     </div>
     <div class="feature-card">
-        <h3>🏆 لیگ و مسابقات</h3>
-        <p>در لیگ شرکت کنید و با دیگر تیم‌ها رقابت کنید</p>
+        <i class="fas fa-trophy-alt"></i>
+        <h3>🏆 لیگ و مسابقات هیجان‌انگیز</h3>
+        <p>در لیگ معتبر شرکت کنید، با بهترین تیم‌ها رقابت کنید و جام قهرمانی را از آن خود کنید</p>
+    </div>
+    <div class="feature-card">
+        <i class="fas fa-chart-line"></i>
+        <h3>📊 آمار و تحلیل پیشرفته</h3>
+        <p>عملکرد تیم و بازیکنان را با آمار دقیق تحلیل کنید، نقاط قوت و ضعف را شناسایی کرده و تصمیمات هوشمندانه بگیرید</p>
+    </div>
+    <div class="feature-card">
+        <i class="fas fa-brain"></i>
+        <h3>🧠 سیستم هوشمند Scout</h3>
+        <p>با استفاده از سیستم اسکوتینگ پیشرفته، استعدادهای جوان و بازیکنان مناسب تیم خود را پیدا کنید</p>
+    </div>
+    <div class="feature-card">
+        <i class="fas fa-comments"></i>
+        <h3>💬 جامعه فعال مدیران</h3>
+        <p>به جمع هزاران مدیر فوتبال بپیوندید، تجربیات خود را به اشتراک بگذارید و با دیگران رقابت کنید</p>
+    </div>
+</div>
+
+<div class="next-match" style="margin-top: 60px;">
+    <h2><i class="fas fa-calendar-alt"></i> چرا باید همین حالا شروع کنید؟</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin-top: 30px;">
+        <div style="text-align: center; padding: 20px;">
+            <i class="fas fa-gift" style="font-size: 3rem; color: #667eea; margin-bottom: 15px;"></i>
+            <h4 style="margin-bottom: 10px; font-size: 1.2rem;">بونوس ثبت نام</h4>
+            <p>بودجه اولیه 10 میلیون تومانی برای شروع قدرتمند</p>
+        </div>
+        <div style="text-align: center; padding: 20px;">
+            <i class="fas fa-medal" style="font-size: 3rem; color: #f093fb; margin-bottom: 15px;"></i>
+            <h4 style="margin-bottom: 10px; font-size: 1.2rem;">جوایز فصلی</h4>
+            <p>شرکت در مسابقات و دریافت جوایز ارزشمند</p>
+        </div>
+        <div style="text-align: center; padding: 20px;">
+            <i class="fas fa-mobile-alt" style="font-size: 3rem; color: #11998e; margin-bottom: 15px;"></i>
+            <h4 style="margin-bottom: 10px; font-size: 1.2rem;">دسترسی همه‌جانبه</h4>
+            <p>مدیریت تیم از طریق موبایل و دسکتاپ</p>
+        </div>
     </div>
 </div>
 {% endblock %}
